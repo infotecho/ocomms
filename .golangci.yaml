@@ -1,0 +1,12 @@
+linters:
+  enable-all: true
+
+  # Linters proven to be valuable, worth keeping even if enable-all is switched off
+  # - gosec
+  # - varnamelen
+
+  disable:
+    - execinquery
+    - exhaustruct
+    - gomnd
+    - gci

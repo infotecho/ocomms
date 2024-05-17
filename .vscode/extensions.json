@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "github.vscode-github-actions",
+    "golang.go",
+    "tylerharris.terraform-link-docs",
+    "hashicorp.terraform"
+  ]
+}
