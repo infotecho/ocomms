@@ -7,6 +7,11 @@ terraform {
   }
 }
 
+module "github" {
+  source = "./modules/github"
+}
+
 module "gcp" {
-  source = "./gcp"
+  source           = "./modules/gcp"
+  github_repo_name = module.github.repo_full_name
 }

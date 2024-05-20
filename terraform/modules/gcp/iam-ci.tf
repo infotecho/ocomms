@@ -19,16 +19,3 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
 }
-
-resource "google_service_account" "github" {
-  account_id   = "github"
-  display_name = "GitHub Actions Runner"
-}
-
-resource "google_service_account_iam_binding" "name" {
-  service_account_id = google_service_account.github.name
-  role               = "roles/iam.workloadIdentityUser"
-  members = [
-    "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.ci.name}/attribute.repository/infotecho/ocomms"
-  ]
-}

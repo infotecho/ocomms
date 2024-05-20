@@ -5,6 +5,9 @@ on:
       - "*"
     paths-ignore:
       - terraform
+env:
+  DOCKER_REGISTRY_HOST: northamerica-northeast1-docker.pkg.dev
+  DOCKER_IMAGE: northamerica-northeast1-docker.pkg.dev/ocomms/ocomms/ocomms
 
 jobs:
   lint:
@@ -22,3 +25,36 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
       - run: make test
+
+  build:
+    name: Build and push Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Authenticate to GCP Artifact Registry
+      - uses: google-github-actions/auth@v2
+        with:
+          project_id: ocomms
+          workload_identity_provider: projects/539601029037/locations/global/workloadIdentityPools/ci-cd/providers/github
+      - uses: actions/cache@v4
+        id: cache-gcloud
+        with:
+          key: gcloud-${{ runner.os }}
+          path: /opt/hostedtoolcache/gcloud
+      - if: ${{ steps.cache-gcloud.outputs.cache-hit != 'true' }}
+        name: Setup gcloud
+        uses: google-github-actions/setup-gcloud@v1
+      - run: gcloud auth configure-docker ${{ env.DOCKER_REGISTRY_HOST }}
+
+      # Build and push Docker image
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
