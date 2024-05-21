@@ -1,0 +1,19 @@
+name: Setup gcloud
+description: Setup gcloud from cache and authenticate via Workload Identity Federation
+
+runs:
+  using: composite
+  steps:
+    - uses: google-github-actions/auth@v2
+      with:
+        project_id: ocomms
+        workload_identity_provider: projects/539601029037/locations/global/workloadIdentityPools/ci-cd/providers/github
+
+    - uses: actions/cache@v4
+      id: cache-gcloud
+      with:
+        key: gcloud-${{ runner.os }}
+        path: /opt/hostedtoolcache/gcloud
+
+    - if: ${{ steps.cache-gcloud.outputs.cache-hit != 'true' }}
+      uses: google-github-actions/setup-gcloud@v1

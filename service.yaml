@@ -1,0 +1,12 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: null # Added by GitHub Actions
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    spec:
+      serviceAccountName: ocomms@ocomms.iam.gserviceaccount.com
+      containers:
+        - image: null # Added by GitHub Actions

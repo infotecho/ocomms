@@ -1,5 +1,6 @@
 name: CI
 on:
+  workflow_dispatch: {}
   push:
     branches:
       - "*"
@@ -8,6 +9,8 @@ on:
 env:
   DOCKER_REGISTRY_HOST: northamerica-northeast1-docker.pkg.dev
   DOCKER_IMAGE: northamerica-northeast1-docker.pkg.dev/ocomms/ocomms/ocomms
+  SERVICE_NAME: ocomms
+  SERVICE_REGION: northamerica-northeast1
 
 jobs:
   lint:
@@ -27,34 +30,57 @@ jobs:
       - run: make test
 
   build:
-    name: Build and push Docker image
+    name: Build
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@v4
-
-      # Authenticate to GCP Artifact Registry
-      - uses: google-github-actions/auth@v2
-        with:
-          project_id: ocomms
-          workload_identity_provider: projects/539601029037/locations/global/workloadIdentityPools/ci-cd/providers/github
-      - uses: actions/cache@v4
-        id: cache-gcloud
-        with:
-          key: gcloud-${{ runner.os }}
-          path: /opt/hostedtoolcache/gcloud
-      - if: ${{ steps.cache-gcloud.outputs.cache-hit != 'true' }}
-        name: Setup gcloud
-        uses: google-github-actions/setup-gcloud@v1
+      - uses: ./.github/actions/setup-gcloud
       - run: gcloud auth configure-docker ${{ env.DOCKER_REGISTRY_HOST }}
-
-      # Build and push Docker image
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+          tags: "${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy
+    needs: [lint, test, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-gcloud
+      - name: Determine service name
+        id: service_name
+        run: |
+          BRANCH_NAME=${GITHUB_REF##*/}
+          if [ "$BRANCH_NAME" == "trunk" ]; then
+            echo "name=${{ env.SERVICE_NAME }}" >> $GITHUB_OUTPUT
+          else
+            echo "name=${{ env.SERVICE_NAME }}-$BRANCH_NAME" >> $GITHUB_OUTPUT
+          fi
+      - name: Configure service.yaml
+        uses: mikefarah/yq@v4
+        with:
+          cmd: >
+            yq --inplace
+            '
+              .metadata.name = "${{ steps.service_name.outputs.name }}" |
+              .spec.template.spec.containers[0].image = "${{ env.DOCKER_IMAGE }}:${{ github.sha }}"
+            '
+            service.yaml
+      - name: Deploy service
+        run: gcloud run services replace service.yaml --region ${{ env.SERVICE_REGION }}
+      - name: Make service public
+        run: |
+          gcloud run services add-iam-policy-binding ${{ steps.service_name.outputs.name }} \
+            --region ${{ env.SERVICE_REGION }} \
+            --member="allUsers" \
+            --role="roles/run.invoker"
