@@ -3,6 +3,7 @@
     "github.vscode-github-actions",
     "golang.go",
     "tylerharris.terraform-link-docs",
-    "hashicorp.terraform"
+    "hashicorp.terraform",
+    "editorconfig.editorconfig"
   ]
 }
