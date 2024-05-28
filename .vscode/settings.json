@@ -1,6 +1,9 @@
 {
   "go.lintTool": "golangci-lint",
   "editor.defaultFormatter": "EditorConfig.EditorConfig",
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
   "editor.formatOnSave": true,
   "files.trimFinalNewlines": true
 }
