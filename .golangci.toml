@@ -1,0 +1,13 @@
+[linters]
+enable-all = true
+# Linters proven to be valuable, worth keeping even if enable-all is switched off
+# enable = [
+#   "gosec",
+#   "varnamelenff"
+# ]
+disable = [
+  "depguard",
+]
+
+[issues]
+exclude-use-default = false

@@ -4,6 +4,7 @@
     "golang.go",
     "tylerharris.terraform-link-docs",
     "hashicorp.terraform",
-    "editorconfig.editorconfig"
+    "editorconfig.editorconfig",
+    "tamasfe.even-better-toml"
   ]
 }
