@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/infotecho/ocomms/internal/config/config",
+  "$ref": "#/$defs/Config",
+  "$defs": {
+    "Config": {
+      "properties": {
+        "server": {
+          "properties": {
+            "addr": {
+              "type": "string"
+            },
+            "timeouts": {
+              "properties": {
+                "ReadHeaderTimeout": {
+                  "type": "string"
+                },
+                "ReadTimeout": {
+                  "type": "string"
+                },
+                "WriteTimeout": {
+                  "type": "string"
+                },
+                "IdleTimeout": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "ReadHeaderTimeout",
+                "ReadTimeout",
+                "WriteTimeout",
+                "IdleTimeout"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "addr",
+            "timeouts"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "server"
+      ]
+    }
+  }
+}

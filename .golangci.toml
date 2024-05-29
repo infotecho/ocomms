@@ -1,3 +1,6 @@
+[run]
+build-tags = ["tools"]
+
 [linters]
 enable-all = true
 # Linters proven to be valuable, worth keeping even if enable-all is switched off
@@ -7,6 +10,8 @@ enable-all = true
 # ]
 disable = [
   "depguard",
+  "execinquery", # deprecated
+  "gomnd",       # deprecated
 ]
 
 [issues]

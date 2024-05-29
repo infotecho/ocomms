@@ -5,10 +5,11 @@ FROM golang:1.22 AS build
 
 WORKDIR /app
 
-COPY go.mod .
-COPY src/* .
+COPY go.mod go.sum ./
+RUN go mod download
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /ocomms
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /ocomms ./cmd/ocomms
 
 ##
 ## Stage 2 - Deploy

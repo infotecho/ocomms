@@ -11,10 +11,19 @@ lint:
 fix:
 	golangci-lint run --fix
 
+generate:
+	go generate ./...
+
+check-config:
+	ajv validate -s src/internal/config/schema.json -d src/internal/config/config.yaml --spec=draft2020
+
+vulncheck:
+	govulncheck ./...
+
 test:
 	go test ./...
 
-check: fmt lint test
+check: generate check-config fmt lint vulncheck test
 
 run:
 	go run src/main.go
