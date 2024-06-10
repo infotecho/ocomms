@@ -10,6 +10,7 @@ enable-all = true
 # ]
 disable = [
   "depguard",
+  "exhaustruct",
   "execinquery", # deprecated
   "gomnd",       # deprecated
 ]

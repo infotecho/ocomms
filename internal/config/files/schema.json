@@ -7,7 +7,7 @@
       "properties": {
         "server": {
           "properties": {
-            "addr": {
+            "port": {
               "type": "string"
             },
             "timeouts": {
@@ -38,15 +38,42 @@
           "additionalProperties": false,
           "type": "object",
           "required": [
-            "addr",
+            "port",
             "timeouts"
+          ]
+        },
+        "logging": {
+          "properties": {
+            "format": {
+              "type": "string",
+              "enum": [
+                "text",
+                "json"
+              ]
+            },
+            "level": {
+              "type": "string",
+              "enum": [
+                "debug",
+                "info",
+                "warn",
+                "error"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "format",
+            "level"
           ]
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "server"
+        "server",
+        "logging"
       ]
     }
   }

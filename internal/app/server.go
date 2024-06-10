@@ -1,25 +1,27 @@
 package app
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
 )
 
 type serverFactory struct {
-	Config config.Config
+	config config.Config
+	logger *slog.Logger
 }
 
 func (f serverFactory) Server() http.Server {
-	config := f.Config.Server
+	config := f.config.Server
+	logger := f.logger
 	//nolint:exhaustruct
 	return http.Server{
-		Addr: ":" + config.Addr,
+		Addr: ":" + config.Port,
 		Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			_, err := w.Write([]byte("Hello world 2"))
 			if err != nil {
-				log.Printf("ResponseWriter failed: %v", err)
+				logger.Error("ResponseWriter failed", "err", err)
 			}
 		}),
 		ReadHeaderTimeout: config.Timeouts.ReadHeaderTimeout,

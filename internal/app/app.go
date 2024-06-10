@@ -2,21 +2,22 @@
 package app
 
 import (
-	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
 )
 
 // Server returns the [http.Server] implementing the O-Comms API.
-func Server() (http.Server, error) {
-	appConfig, err := config.Load()
-	if err != nil {
-		//nolint:gosec //gosec doesn't allow zero value of http.Server due to unset timeouts (Slowloris check)
-		return http.Server{}, fmt.Errorf("failed to initialize app: %w", err)
+func Server(conf config.Config, logger *slog.Logger) http.Server {
+	app := wireDependencies(conf, logger)
+
+	return app.Server()
+}
+
+func wireDependencies(config config.Config, logger *slog.Logger) serverFactory {
+	return serverFactory{
+		config: config,
+		logger: logger,
 	}
-
-	app := wireDependencies(appConfig)
-
-	return app.Server(), nil
 }

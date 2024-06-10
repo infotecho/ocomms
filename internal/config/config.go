@@ -2,31 +2,38 @@
 package config
 
 import (
-	"bytes"
-	_ "embed"
-	"fmt"
-
-	"github.com/spf13/viper"
+	"log/slog"
+	"time"
 )
 
-//go:embed config.yaml
-var configFile []byte
+//go:generate go run ../../cmd/genschema/genschema.go
 
-// Load reads app config from config.yaml and unmarshals it to a Config struct.
-func Load() (Config, error) {
-	viper.SetConfigType("yaml")
+// Config is the unmarshalled representation of config.yaml.
+// [internal/log] configuration.
+type Config struct {
+	Server struct {
+		Port     string `json:"port"`
+		Timeouts struct {
+			ReadHeaderTimeout time.Duration `jsonschema:"type=string"`
+			ReadTimeout       time.Duration `jsonschema:"type=string"`
+			WriteTimeout      time.Duration `jsonschema:"type=string"`
+			IdleTimeout       time.Duration `jsonschema:"type=string"`
+		} `json:"timeouts"`
+	} `json:"server"`
 
-	err := viper.ReadConfig(bytes.NewBuffer(configFile))
-	if err != nil {
-		return Config{}, fmt.Errorf("failed to read config.yaml: %w", err)
-	}
-
-	var config Config
-
-	err = viper.Unmarshal(&config)
-	if err != nil {
-		return Config{}, fmt.Errorf("failed to unmarshal config.yaml: %w", err)
-	}
-
-	return config, nil
+	Logging struct {
+		Format LogFormat  `json:"format" jsonschema:"type=string,enum=text,enum=json"`
+		Level  slog.Level `json:"level"  jsonschema:"type=string,enum=debug,enum=info,enum=warn,enum=error"`
+	} `json:"logging"`
 }
+
+// LogFormat determines the output format of logs: JSON or plain text.
+type LogFormat = string
+
+const (
+	// LogFormatText represents the plain text logging format for local development.
+	LogFormatText LogFormat = "text"
+
+	// LogFormatJSON represents the JSON logging format for live environments in Cloud Run.
+	LogFormatJSON LogFormat = "json"
+)

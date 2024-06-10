@@ -1,8 +1,12 @@
 # yaml-language-server: $schema=./schema.json
 server:
-  addr: "8080"
+  port: "8080"
   timeouts:
     ReadHeaderTimeout: 1s
     ReadTimeout: 15s
     WriteTimeout: 15s
     IdleTimeout: 90s
+
+logging:
+  format: json
+  level: info

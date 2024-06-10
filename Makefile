@@ -15,7 +15,7 @@ generate:
 	go generate ./...
 
 check-config:
-	ajv validate -s internal/config/schema.json -d internal/config/config.yaml --spec=draft2020
+	ajv validate -s internal/config/files/schema.json -d internal/config/files/config.yaml --spec=draft2020
 
 vulncheck:
 	govulncheck ./...
@@ -26,4 +26,4 @@ test:
 check: generate check-config fmt lint vulncheck test
 
 run:
-	go run cmd/ocomms/main.go
+	go run cmd/ocomms/main.go --logging.format=text
