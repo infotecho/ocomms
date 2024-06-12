@@ -16,20 +16,24 @@ func New(conf config.Config) *slog.Logger {
 
 	switch conf.Logging.Format {
 	case config.LogFormatText:
-		handler = tint.NewHandler(os.Stderr, &tint.Options{
-			AddSource:   false,
-			Level:       conf.Logging.Level,
-			NoColor:     false,
-			ReplaceAttr: nil,
-			TimeFormat:  "15:04:05.000000",
-		})
+		handler = textHandler(conf)
 	// JSON is default to ensure that logs in live environments are always formatted correctly
 	default:
-		handler = slog.NewJSONHandler(os.Stderr, nil)
+		handler = newCloudLoggingHandler(conf)
 	}
 
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
 	return logger
+}
+
+func textHandler(conf config.Config) slog.Handler {
+	return tint.NewHandler(os.Stderr, &tint.Options{
+		AddSource:   false,
+		Level:       conf.Logging.Level,
+		NoColor:     false,
+		ReplaceAttr: nil,
+		TimeFormat:  "15:04:05.000000",
+	})
 }

@@ -10,3 +10,6 @@ spec:
       serviceAccountName: ocomms@ocomms.iam.gserviceaccount.com
       containers:
         - image: null # Added by GitHub Actions
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: ocommms
