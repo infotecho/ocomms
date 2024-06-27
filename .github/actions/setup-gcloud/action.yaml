@@ -16,4 +16,4 @@ runs:
         path: /opt/hostedtoolcache/gcloud
 
     - if: ${{ steps.cache-gcloud.outputs.cache-hit != 'true' }}
-      uses: google-github-actions/setup-gcloud@v1
+      uses: google-github-actions/setup-gcloud@v2
