@@ -12,4 +12,4 @@ spec:
         - image: null # Added by GitHub Actions
           env:
             - name: GOOGLE_CLOUD_PROJECT
-              value: ocommms
+              value: ocomms
