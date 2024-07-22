@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//go:embed files/config.yaml
+//go:embed config.yaml
 var configFile []byte
 
 // Load reads app config from config.yaml and unmarshals it to a Config struct.

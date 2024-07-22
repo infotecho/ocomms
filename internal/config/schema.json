@@ -73,7 +73,6 @@
       "type": "object",
       "required": [
         "server",
-        "logging"
       ]
     }
   }

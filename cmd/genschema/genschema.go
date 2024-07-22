@@ -22,7 +22,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	file, err := os.Create("files/schema.json")
+	file, err := os.Create("schema.json")
 	if err != nil {
 		log.Fatal(err)
 	}
