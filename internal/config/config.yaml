@@ -10,3 +10,12 @@ server:
 logging:
   format: json
   level: info
+
+twilio:
+  agentDIDs:
+    - "6138160938"
+  timeouts:
+    gatherOutboundNumber: 10
+  voice:
+    en: Polly.Stephen-Neural
+    fr: Polly.Liam-Neural

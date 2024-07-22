@@ -67,12 +67,49 @@
             "format",
             "level"
           ]
+        },
+        "twilio": {
+          "properties": {
+            "agentDIDs": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "timeouts": {
+              "properties": {
+                "gatherOutboundNumber": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "gatherOutboundNumber"
+              ]
+            },
+            "voice": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "agentDIDs",
+            "timeouts",
+            "voice"
+          ]
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
         "server",
+        "logging",
+        "twilio"
       ]
     }
   }

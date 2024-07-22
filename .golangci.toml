@@ -10,10 +10,16 @@ enable-all = true
 # ]
 disable = [
   "depguard",
-  "exhaustruct",
   "execinquery", # deprecated
   "gomnd",       # deprecated
+  "tagliatelle"
 ]
+
+[linters-settings.varnamelen]
+ignore-names = ["w", "r"]
+
+[linters-settings.exhaustruct]
+include = ['github\.com/infotecho/.*']
 
 [issues]
 exclude-use-default = false

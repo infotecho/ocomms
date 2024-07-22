@@ -9,32 +9,22 @@ import (
 )
 
 type serverFactory struct {
-	config config.Config
-	logger *slog.Logger
+	Config     config.Config
+	Logger     *slog.Logger
+	MuxFactory *muxFactory
 }
 
-func (f serverFactory) Server() http.Server {
-	config := f.config.Server
-	logger := f.logger
-
-	var handler http.Handler
-	handler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		_, err := w.Write([]byte("Hello world 2"))
-		if err != nil {
-			logger.Error("ResponseWriter failed", "err", err)
-		}
-
-		logger.InfoContext(req.Context(), "Hello world request")
-	})
-	handler = appyMilddleware(handler)
+func (sf serverFactory) Server() http.Server {
+	mux := sf.MuxFactory.Mux()
+	handler := appyMilddleware(mux)
 
 	return http.Server{
-		Addr:              ":" + config.Port,
+		Addr:              ":" + sf.Config.Server.Port,
 		Handler:           handler,
-		ReadHeaderTimeout: config.Timeouts.ReadHeaderTimeout,
-		ReadTimeout:       config.Timeouts.ReadTimeout,
-		WriteTimeout:      config.Timeouts.WriteTimeout,
-		IdleTimeout:       config.Timeouts.IdleTimeout,
+		ReadHeaderTimeout: sf.Config.Server.Timeouts.ReadHeaderTimeout,
+		ReadTimeout:       sf.Config.Server.Timeouts.ReadTimeout,
+		WriteTimeout:      sf.Config.Server.Timeouts.WriteTimeout,
+		IdleTimeout:       sf.Config.Server.Timeouts.IdleTimeout,
 	}
 }
 
