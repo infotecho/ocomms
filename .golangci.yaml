@@ -1,0 +1,31 @@
+run:
+  build-tags:
+    - tools
+
+linters:
+  enable-all: true
+  # Linters proven to be valuable, worth keeping even if enable-all is switched off
+  # enable:
+  #   - gosec
+  #   - varnamelenff
+  disable:
+    - depguard
+    - execinquery # deprecated
+    - gomnd       # deprecated
+    - tagliatelle
+
+linters-settings:
+  varnamelen:
+    ignore-names:
+      - w
+      - r
+  exhaustruct:
+    include:
+      - 'github\.com/infotecho/.*'
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - exhaustruct
