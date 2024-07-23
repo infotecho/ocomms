@@ -26,6 +26,10 @@ type Config struct {
 		Level  slog.Level `json:"level"  jsonschema:"type=string,enum=debug,enum=info,enum=warn,enum=error"`
 	} `json:"logging"`
 
+	I18N struct {
+		DefaultLang string `json:"defaultLang"`
+	} `json:"i18n"`
+
 	Twilio struct {
 		AgentDIDs []string `json:"agentDIDs"`
 		Timeouts  struct { // time in seconds

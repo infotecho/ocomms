@@ -72,8 +72,8 @@ func (vh VoiceHandler) ConnectAgent(actionConnectAgent string) http.HandlerFunc 
 			return vh.Twigen.DialAgent(r.Context(), "en")
 		case "2":
 			return vh.Twigen.DialAgent(r.Context(), "fr")
+		default:
+			return vh.Twigen.GatherLanguage(r.Context(), actionConnectAgent, false)
 		}
-
-		return vh.Twigen.GatherLanguage(r.Context(), actionConnectAgent, false)
 	})
 }

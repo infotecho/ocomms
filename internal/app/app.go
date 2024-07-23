@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
+	"github.com/infotecho/ocomms/internal/i18n"
 	"github.com/infotecho/ocomms/internal/twigen"
 	"github.com/infotecho/ocomms/internal/twihooks"
 )
@@ -18,6 +19,12 @@ func Server(conf config.Config, logger *slog.Logger) http.Server {
 }
 
 func wireDependencies(config config.Config, logger *slog.Logger) serverFactory {
+	i18n, err := i18n.NewMessageProvider(logger, config)
+	if err != nil {
+		logger.Error("Failed to load i18n messages", "err", err)
+		panic(err)
+	}
+
 	return serverFactory{
 		Config: config,
 		Logger: logger,
@@ -29,6 +36,7 @@ func wireDependencies(config config.Config, logger *slog.Logger) serverFactory {
 				Logger: logger,
 				Twigen: &twigen.Voice{
 					Config: config,
+					I18n:   i18n,
 					Logger: logger,
 				},
 			},

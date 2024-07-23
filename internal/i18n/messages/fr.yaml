@@ -1,0 +1,4 @@
+voice:
+  welcome: Vous avez rejoint l'infothèque d'Ottawa.
+  langSelect: Pour le service en français, appuyer sur le {digit}.
+  gatherOutbound: Enter the number you wish to call, then press pound.

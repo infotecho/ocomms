@@ -11,6 +11,9 @@ logging:
   format: json
   level: info
 
+i18n:
+  defaultLang: en
+
 twilio:
   agentDIDs:
     - "6138160938"

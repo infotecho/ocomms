@@ -13,7 +13,7 @@ const (
 	voiceConnectAgent = "/voice/connect-agent"
 )
 
-type VoiceHandler interface {
+type voiceHandler interface {
 	Inbound(actionDialOut string, actionDialAgent string) http.HandlerFunc
 	DialOut() http.HandlerFunc
 	ConnectAgent(actionConnectAgent string) http.HandlerFunc
@@ -22,7 +22,7 @@ type VoiceHandler interface {
 type muxFactory struct {
 	Config       config.Config
 	Logger       *slog.Logger
-	VoiceHandler VoiceHandler
+	VoiceHandler voiceHandler
 }
 
 func (mf muxFactory) Mux() *http.ServeMux {

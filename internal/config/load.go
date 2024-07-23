@@ -19,7 +19,7 @@ func Load() (Config, error) {
 
 	err := yaml.Unmarshal(configFile, &configMap)
 	if err != nil {
-		return Config{}, fmt.Errorf("failed to read config.yaml: %w", err)
+		return Config{}, fmt.Errorf("failed to unmarshal config.yaml: %w", err)
 	}
 
 	var config Config
@@ -38,7 +38,7 @@ func Load() (Config, error) {
 
 	err = decoder.Decode(configMap)
 	if err != nil {
-		return Config{}, fmt.Errorf("failed to unmarshal config.yaml: %w", err)
+		return Config{}, fmt.Errorf("failed to decode config.yaml: %w", err)
 	}
 
 	applyCommandLineFlags(&config)

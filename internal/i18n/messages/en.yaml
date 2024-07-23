@@ -1,0 +1,4 @@
+voice:
+  welcome: Welcome to InfoTech Ottawa.
+  gatherOutbound: Enter the number you wish to call, then press pound.
+  langSelect: For service in English, press {digit}.

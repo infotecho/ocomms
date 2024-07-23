@@ -1,3 +1,4 @@
+// Package twigen generates TwiML.
 package twigen
 
 import (
@@ -6,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/infotecho/ocomms/internal/config"
+	"github.com/infotecho/ocomms/internal/i18n"
 	"github.com/twilio/twilio-go/twiml"
 )
 
@@ -13,6 +15,7 @@ import (
 type Voice struct {
 	Config config.Config
 	Logger *slog.Logger
+	I18n   *i18n.MessageProvider
 }
 
 func (v Voice) voice(ctx context.Context, verbs []twiml.Element) string {
@@ -24,7 +27,29 @@ func (v Voice) voice(ctx context.Context, verbs []twiml.Element) string {
 	return res
 }
 
-func (v *Voice) say(lang string, msg string) *twiml.VoiceSay {
+func (v *Voice) say(ctx context.Context, lang string, getter func(m i18n.Messages) string) *twiml.VoiceSay {
+	msg, err := v.I18n.Message(lang, getter)
+	if err != nil {
+		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
+	}
+
+	return &twiml.VoiceSay{
+		Message: msg,
+		Voice:   v.Config.Twilio.Voice[lang],
+	}
+}
+
+func (v *Voice) sayRepl(
+	ctx context.Context,
+	lang string,
+	getter func(m i18n.Messages) string,
+	replaments map[string]string,
+) *twiml.VoiceSay {
+	msg, err := v.I18n.MessageReplace(lang, getter, replaments)
+	if err != nil {
+		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
+	}
+
 	return &twiml.VoiceSay{
 		Message: msg,
 		Voice:   v.Config.Twilio.Voice[lang],
@@ -33,7 +58,7 @@ func (v *Voice) say(lang string, msg string) *twiml.VoiceSay {
 
 // GatherOutboundNumber generates TwiML gather a phone number to place an outbound call.
 func (v Voice) GatherOutboundNumber(ctx context.Context, actionDialOut string) string {
-	say := v.say("en", "Enter the number you wish to call, then press pound.")
+	say := v.say(ctx, "en", func(m i18n.Messages) string { return m.Voice.GatherOutbound })
 	gather := &twiml.VoiceGather{
 		Action:        actionDialOut,
 		InnerElements: []twiml.Element{say},
@@ -56,9 +81,15 @@ func (v Voice) DialOut(ctx context.Context, number string) string {
 
 // GatherLanguage generates TwiML to gather a caller's language preference.
 func (v Voice) GatherLanguage(ctx context.Context, actionConnectAgent string, intro bool) string {
-	sayWelcome := v.say("en", "Welcome to InfoTech Ottawa.")
-	sayEn := v.say("en", "For service in English, press 1.")
-	sayFr := v.say("fr", "Pour le service en français, appuyer sur le 2.")
+	sayWelcome := v.say(ctx, "en", func(m i18n.Messages) string { return m.Voice.Welcome })
+	sayEn := v.sayRepl(ctx, "en",
+		func(m i18n.Messages) string { return m.Voice.LangSelect },
+		map[string]string{"digit": "1"},
+	)
+	sayFr := v.sayRepl(ctx, "fr",
+		func(m i18n.Messages) string { return m.Voice.LangSelect },
+		map[string]string{"digit": "2"},
+	)
 
 	gather := &twiml.VoiceGather{
 		Action: actionConnectAgent,
@@ -74,7 +105,7 @@ func (v Voice) GatherLanguage(ctx context.Context, actionConnectAgent string, in
 	return v.voice(ctx, verbs)
 }
 
-// DialAgent genreates TwiML to connect a caller to an agent
-func (v Voice) DialAgent(ctx context.Context, lang string) string {
-	return ""
+// DialAgent generates TwiML to connect a caller to an agent.
+func (v Voice) DialAgent(ctx context.Context, _ string) string {
+	return v.voice(ctx, []twiml.Element{})
 }

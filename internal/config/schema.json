@@ -68,6 +68,18 @@
             "level"
           ]
         },
+        "i18n": {
+          "properties": {
+            "defaultLang": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "defaultLang"
+          ]
+        },
         "twilio": {
           "properties": {
             "agentDIDs": {
@@ -109,6 +121,7 @@
       "required": [
         "server",
         "logging",
+        "i18n",
         "twilio"
       ]
     }
