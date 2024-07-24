@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/infotecho/ocomms/internal/i18n/messages",
+  "$ref": "#/$defs/Messages",
+  "$defs": {
+    "Messages": {
+      "properties": {
+        "voice": {
+          "properties": {
+            "gatherOutbound": {
+              "type": "string"
+            },
+            "langSelect": {
+              "type": "string"
+            },
+            "welcome": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "gatherOutbound",
+            "langSelect",
+            "welcome"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "voice"
+      ]
+    }
+  }
+}

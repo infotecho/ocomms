@@ -1,4 +1,5 @@
+# yaml-language-server: $schema=../schema.json
 voice:
-  welcome: Vous avez rejoint l'infothèque d'Ottawa.
-  langSelect: Pour le service en français, appuyer sur le {digit}.
   gatherOutbound: Enter the number you wish to call, then press pound.
+  langSelect: Pour le service en français, appuyer sur le {digit}.
+  welcome: Vous avez rejoint l'infothèque d'Ottawa.

@@ -9,7 +9,6 @@ import (
 //go:generate go run ../../cmd/genschema/genschema.go
 
 // Config is the unmarshalled representation of config.yaml.
-// [internal/log] configuration.
 type Config struct {
 	Server struct {
 		Port     string `json:"port"`

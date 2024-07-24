@@ -14,8 +14,10 @@ fix:
 generate:
 	go generate ./...
 
-check-config:
+schemavalidate:
 	ajv validate -s internal/config/schema.json -d internal/config/config.yaml --spec=draft2020
+	ajv validate -s internal/i18n/schema.json -d internal/i18n/messages/en.yaml --spec=draft2020
+	ajv validate -s internal/i18n/schema.json -d internal/i18n/messages/fr.yaml --spec=draft2020
 
 vulncheck:
 	govulncheck ./...
@@ -23,7 +25,7 @@ vulncheck:
 test:
 	go test ./...
 
-check: generate check-config fmt lint vulncheck test
+check: generate schemavalidate fmt lint vulncheck test
 
 run:
 	go run cmd/ocomms/main.go --logging.format=text

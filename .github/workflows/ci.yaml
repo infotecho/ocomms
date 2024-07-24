@@ -49,13 +49,13 @@ jobs:
           git diff --no-ext-diff --quiet --exit-code
 
   config:
-    name: Validate config.yaml
+    name: Validate config and i18n
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
       - run: bun install -g ajv-cli
-      - run: make check-config
+      - run: make schemavalidate
 
   vulns:
     name: Vulnerability scan

@@ -1,5 +1,7 @@
 package i18n
 
+//go:generate go run ../../cmd/genschema/genschema.go
+
 // Messages defines all the i18n strings to be localized.
 type Messages struct {
 	Voice struct {

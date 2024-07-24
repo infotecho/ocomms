@@ -13,6 +13,8 @@ linters:
     - execinquery # deprecated
     - gomnd       # deprecated
     - tagliatelle
+    - wsl
+    - nlreturn
 
 linters-settings:
   varnamelen:

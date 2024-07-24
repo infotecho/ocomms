@@ -1,4 +1,5 @@
+# yaml-language-server: $schema=../schema.json
 voice:
-  welcome: Welcome to InfoTech Ottawa.
   gatherOutbound: Enter the number you wish to call, then press pound.
   langSelect: For service in English, press {digit}.
+  welcome: Welcome to InfoTech Ottawa.
