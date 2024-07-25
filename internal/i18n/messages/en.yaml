@@ -1,5 +1,10 @@
 # yaml-language-server: $schema=../schema.json
 voice:
-  gatherOutbound: Enter the number you wish to call, then press pound.
+  acceptCall: Press any key to accept the call.
+  confirmConnected: Connected.
   langSelect: For service in English, press {digit}.
+  pleaseHold: Please hold while we transfer your call.
+  voicemail: >
+    Sorry, we can't come to the phone right now. Press ${digit} to leave a message, and we'll call you back as soon as we can.
+    At any point during the recording, you can press ${digit} again to discard your message and start over.
   welcome: Welcome to InfoTech Ottawa.

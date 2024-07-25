@@ -90,14 +90,22 @@
             },
             "timeouts": {
               "properties": {
+                "dialAgents": {
+                  "type": "integer"
+                },
                 "gatherOutboundNumber": {
+                  "type": "integer"
+                },
+                "gatherAcceptCall": {
                   "type": "integer"
                 }
               },
               "additionalProperties": false,
               "type": "object",
               "required": [
-                "gatherOutboundNumber"
+                "dialAgents",
+                "gatherOutboundNumber",
+                "gatherAcceptCall"
               ]
             },
             "voice": {

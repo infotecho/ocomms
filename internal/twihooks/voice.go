@@ -37,6 +37,15 @@ func (vh VoiceHandler) parseForm(r *http.Request) {
 	}
 }
 
+func (vh VoiceHandler) lang(r *http.Request) string {
+	lang := r.URL.Query().Get("lang")
+	if lang == "" {
+		vh.Logger.ErrorContext(r.Context(), "No lang query parameter provided. Defaulting to en.")
+		lang = "en"
+	}
+	return lang
+}
+
 // Inbound handles inbound calls.
 func (vh VoiceHandler) Inbound(actionDialOut string, actionConnectAgent string) http.HandlerFunc {
 	return vh.handler(func(r *http.Request) string {
@@ -63,17 +72,59 @@ func (vh VoiceHandler) DialOut() http.HandlerFunc {
 }
 
 // ConnectAgent connects an incoming caller to an agent.
-func (vh VoiceHandler) ConnectAgent(actionConnectAgent string) http.HandlerFunc {
+func (vh VoiceHandler) ConnectAgent(
+	actionConnectAgent string,
+	actionAcceptCall string,
+	actionEndCall string,
+) http.HandlerFunc {
 	return vh.handler(func(r *http.Request) string {
 		vh.parseForm(r)
 
 		switch r.Form.Get("Digits") {
 		case "1":
-			return vh.Twigen.DialAgent(r.Context(), "en")
+			return vh.Twigen.DialAgent(r.Context(), actionAcceptCall, actionEndCall, "en")
 		case "2":
-			return vh.Twigen.DialAgent(r.Context(), "fr")
+			return vh.Twigen.DialAgent(r.Context(), actionAcceptCall, actionEndCall, "fr")
 		default:
 			return vh.Twigen.GatherLanguage(r.Context(), actionConnectAgent, false)
+		}
+	})
+}
+
+// AcceptCall prompts an agent to press a key to accept the call,
+// to distinguish from their personal voicemail answering the call.
+func (vh VoiceHandler) AcceptCall(actionConfirmConnected string) http.HandlerFunc {
+	return vh.handler(func(r *http.Request) string {
+		return vh.Twigen.GatherAccept(r.Context(), actionConfirmConnected, vh.lang(r))
+	})
+}
+
+// ConfirmConnected confirms to the agent that they were connected to the call after accepting it.
+func (vh VoiceHandler) ConfirmConnected() http.HandlerFunc {
+	return vh.handler(func(r *http.Request) string {
+		return vh.Twigen.SayConnected(r.Context(), vh.lang(r))
+	})
+}
+
+// EndCall handles the end of an inbound call, whether successful (agent picks up)
+// or unsuccessful (busy tone or call goes to agent voicemail).
+func (vh VoiceHandler) EndCall(actionStartRecording string) http.HandlerFunc {
+	return vh.handler(func(r *http.Request) string {
+		vh.parseForm(r)
+
+		callStatus := r.Form.Get("DialCallStatus")
+		callDuration := r.Form.Get("DialCallDuration")
+		switch {
+		case callStatus == "busy",
+			callStatus == "no-answer",
+			// indicates call went agent's to voicemail - no key pressed to accept call
+			callStatus == "completed" && callDuration == "":
+			return vh.Twigen.GatherVoicemail(r.Context(), actionStartRecording, vh.lang(r))
+		case callStatus == "completed":
+			return ""
+		default:
+			vh.Logger.ErrorContext(r.Context(), "Unexpected DialCallStatus: "+callStatus)
+			return ""
 		}
 	})
 }

@@ -7,10 +7,19 @@
       "properties": {
         "voice": {
           "properties": {
-            "gatherOutbound": {
+            "acceptCall": {
+              "type": "string"
+            },
+            "confirmConnected": {
               "type": "string"
             },
             "langSelect": {
+              "type": "string"
+            },
+            "pleaseHold": {
+              "type": "string"
+            },
+            "voicemail": {
               "type": "string"
             },
             "welcome": {
@@ -20,8 +29,11 @@
           "additionalProperties": false,
           "type": "object",
           "required": [
-            "gatherOutbound",
+            "acceptCall",
+            "confirmConnected",
             "langSelect",
+            "pleaseHold",
+            "voicemail",
             "welcome"
           ]
         }

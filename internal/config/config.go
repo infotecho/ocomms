@@ -32,7 +32,9 @@ type Config struct {
 	Twilio struct {
 		AgentDIDs []string `json:"agentDIDs"`
 		Timeouts  struct { // time in seconds
+			DialAgents           int `json:"dialAgents"`
 			GatherOutboundNumber int `json:"gatherOutboundNumber"`
+			GatherAcceptCall     int `json:"gatherAcceptCall"`
 		} `json:"timeouts"`
 		Voice map[string]string `json:"voice"`
 	} `json:"twilio"`
