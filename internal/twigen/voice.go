@@ -92,11 +92,13 @@ func (v Voice) GatherLanguage(ctx context.Context, actionConnectAgent string, in
 
 	gatherWelcome := &twiml.VoiceGather{
 		Action:        actionConnectAgent,
+		NumDigits:     "1",
 		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherLanguage),
 		InnerElements: []twiml.Element{sayWelcome, sayEn, sayFr},
 	}
 	gather := &twiml.VoiceGather{
 		Action:        actionConnectAgent,
+		NumDigits:     "1",
 		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherLanguage),
 		InnerElements: []twiml.Element{sayEn, sayFr},
 	}
