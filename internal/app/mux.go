@@ -30,7 +30,9 @@ func (mf muxFactory) Mux() *http.ServeMux {
 
 	mux.HandleFunc(voiceInbound, mf.VoiceHandler.Inbound(voiceDialOut, voiceConnectAgent))
 	mux.HandleFunc(voiceDialOut, mf.VoiceHandler.DialOut(voiceRecordingStatus))
-	mux.HandleFunc(voiceConnectAgent, mf.VoiceHandler.ConnectAgent(voiceRecordingStatus, voiceConnectAgent, voiceAcceptCall, voiceEndCall))
+	mux.HandleFunc(voiceConnectAgent,
+		mf.VoiceHandler.ConnectAgent(voiceRecordingStatus, voiceConnectAgent, voiceAcceptCall, voiceEndCall),
+	)
 	mux.HandleFunc(voiceAcceptCall, mf.VoiceHandler.AcceptCall(voiceConfirmConnected))
 	mux.HandleFunc(voiceConfirmConnected, mf.VoiceHandler.ConfirmConnected())
 	mux.HandleFunc(voiceEndCall, mf.VoiceHandler.EndCall(voiceStartRecording))

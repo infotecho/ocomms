@@ -80,11 +80,14 @@ func (vh VoiceHandler) ConnectAgent(
 	return vh.handler(func(r *http.Request) string {
 		vh.parseForm(r)
 
-		switch r.Form.Get("Digits") {
+		callerID := r.Form.Get("To")
+		digits := r.Form.Get("Digits")
+
+		switch digits {
 		case "1":
-			return vh.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, "en")
+			return vh.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, callerID, "en")
 		case "2":
-			return vh.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, "fr")
+			return vh.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, callerID, "fr")
 		default:
 			return vh.Twigen.GatherLanguage(r.Context(), actionConnectAgent, false)
 		}

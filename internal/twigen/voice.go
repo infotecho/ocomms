@@ -116,6 +116,7 @@ func (v Voice) DialAgent(
 	callbackRecordingStatus string,
 	actionAcceptCall string,
 	actionEndCall string,
+	callerID string,
 	lang string,
 ) string {
 	sayHold := v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.PleaseHold })
@@ -131,6 +132,7 @@ func (v Voice) DialAgent(
 
 	dialAgents := &twiml.VoiceDial{
 		Action:        actionEndCall + "?lang=" + lang,
+		CallerId:      callerID,
 		InnerElements: numbers,
 		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.DialAgents),
 	}
