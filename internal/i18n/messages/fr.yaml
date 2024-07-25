@@ -5,6 +5,6 @@ voice:
   langSelect: Pour le service en français, appuyer sur le {digit}.
   pleaseHold: Veuillez patienter alors que nous transférons votre appel.
   voicemail: >
-    Désolé, nous sommes actuellement occupés. Pour laisser un message, appuyer sur le 9.
-    Pendant l'enregistrement, vous pouvez appuyer sur le 9 pour effacer votre message et recommencer.
+    Désolé, nous sommes actuellement occupés. Pour laisser un message, appuyer sur le {digit}...
+    Pendant l'enregistrement, vous pouvez appuyer encore une fois sur le {digit} pour effacer votre message et recommencer.
   welcome: Vous avez rejoint l'infothèque d'Ottawa.
