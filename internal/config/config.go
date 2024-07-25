@@ -33,6 +33,7 @@ type Config struct {
 		AgentDIDs []string `json:"agentDIDs"`
 		Timeouts  struct { // time in seconds
 			DialAgents           int `json:"dialAgents"`
+			GatherLanguage       int `json:"gatherLanguage"`
 			GatherOutboundNumber int `json:"gatherOutboundNumber"`
 			GatherAcceptCall     int `json:"gatherAcceptCall"`
 		} `json:"timeouts"`

@@ -93,6 +93,9 @@
                 "dialAgents": {
                   "type": "integer"
                 },
+                "gatherLanguage": {
+                  "type": "integer"
+                },
                 "gatherOutboundNumber": {
                   "type": "integer"
                 },
@@ -104,6 +107,7 @@
               "type": "object",
               "required": [
                 "dialAgents",
+                "gatherLanguage",
                 "gatherOutboundNumber",
                 "gatherAcceptCall"
               ]

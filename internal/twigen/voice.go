@@ -90,16 +90,21 @@ func (v Voice) GatherLanguage(ctx context.Context, actionConnectAgent string, in
 		map[string]string{"digit": "2"},
 	)
 
-	gather := &twiml.VoiceGather{
-		Action: actionConnectAgent,
+	gatherWelcome := &twiml.VoiceGather{
+		Action:        actionConnectAgent,
+		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherLanguage),
+		InnerElements: []twiml.Element{sayWelcome, sayEn, sayFr},
 	}
-	if intro {
-		gather.InnerElements = []twiml.Element{sayWelcome, sayEn, sayFr}
-	} else {
-		gather.InnerElements = []twiml.Element{sayEn, sayFr}
+	gather := &twiml.VoiceGather{
+		Action:        actionConnectAgent,
+		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherLanguage),
+		InnerElements: []twiml.Element{sayEn, sayFr},
 	}
 
-	return v.voice(ctx, []twiml.Element{gather})
+	if intro {
+		return v.voice(ctx, []twiml.Element{gatherWelcome, gather})
+	}
+	return v.voice(ctx, []twiml.Element{gather, gather})
 }
 
 // DialAgent generates TwiML to connect a caller to an agent.

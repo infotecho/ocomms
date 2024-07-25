@@ -19,8 +19,9 @@ twilio:
     - "6138160938"
   timeouts:
     dialAgents: 10
-    gatherOutboundNumber: 10
     gatherAcceptCall: 5
+    gatherLanguage: 10
+    gatherOutboundNumber: 10
   voice:
     en: Polly.Stephen-Neural
     fr: Polly.Liam-Neural
