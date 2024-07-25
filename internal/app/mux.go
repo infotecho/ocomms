@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
+	"github.com/infotecho/ocomms/internal/twihooks"
 )
 
 const (
@@ -17,19 +18,10 @@ const (
 	voiceStartRecording   = "/voice/start-recording"
 )
 
-type voiceHandler interface {
-	Inbound(actionDialOut string, actionDialAgent string) http.HandlerFunc
-	DialOut() http.HandlerFunc
-	ConnectAgent(actionConnectAgent string, actionAcceptCall string, actionEndCall string) http.HandlerFunc
-	AcceptCall(actionConfirmConnected string) http.HandlerFunc
-	ConfirmConnected() http.HandlerFunc
-	EndCall(actionStartRecording string) http.HandlerFunc
-}
-
 type muxFactory struct {
 	Config       config.Config
 	Logger       *slog.Logger
-	VoiceHandler voiceHandler
+	VoiceHandler *twihooks.VoiceHandler
 }
 
 func (mf muxFactory) Mux() *http.ServeMux {
