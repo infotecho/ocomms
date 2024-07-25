@@ -147,13 +147,14 @@ func (v Voice) DialAgent(
 // GatherAccept generates TwiML to have an agent confirm acceptance of a call.
 func (v Voice) GatherAccept(ctx context.Context, actionConfirmConnected string, lang string) string {
 	sayAccept := v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.AcceptCall })
+	hangup := &twiml.VoiceHangup{}
 	gather := &twiml.VoiceGather{
 		Action:        actionConfirmConnected,
 		NumDigits:     "1",
 		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherAcceptCall),
 		InnerElements: []twiml.Element{sayAccept},
 	}
-	return v.voice(ctx, []twiml.Element{gather})
+	return v.voice(ctx, []twiml.Element{gather, hangup})
 }
 
 // SayConnected generates TwiML to confirm to an agent that a call was connected.
