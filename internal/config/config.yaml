@@ -17,6 +17,8 @@ i18n:
 twilio:
   agentDIDs:
     - "6138160938"
+  recordInboundCalls: true
+  recordOutboundCalls: true
   timeouts:
     dialAgents: 10
     gatherAcceptCall: 5

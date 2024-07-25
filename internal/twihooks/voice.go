@@ -60,18 +60,19 @@ func (vh VoiceHandler) Inbound(actionDialOut string, actionConnectAgent string) 
 }
 
 // DialOut dials out from the company to a gathered phone number.
-func (vh VoiceHandler) DialOut() http.HandlerFunc {
+func (vh VoiceHandler) DialOut(callbackRecordingStatus string) http.HandlerFunc {
 	return vh.handler(func(r *http.Request) string {
 		vh.parseForm(r)
 
 		digits := r.Form.Get("Digits")
 
-		return vh.Twigen.DialOut(r.Context(), digits)
+		return vh.Twigen.DialOut(r.Context(), callbackRecordingStatus, digits)
 	})
 }
 
 // ConnectAgent connects an incoming caller to an agent.
 func (vh VoiceHandler) ConnectAgent(
+	callbackRecordingStatus string,
 	actionConnectAgent string,
 	actionAcceptCall string,
 	actionEndCall string,
@@ -81,9 +82,9 @@ func (vh VoiceHandler) ConnectAgent(
 
 		switch r.Form.Get("Digits") {
 		case "1":
-			return vh.Twigen.DialAgent(r.Context(), actionAcceptCall, actionEndCall, "en")
+			return vh.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, "en")
 		case "2":
-			return vh.Twigen.DialAgent(r.Context(), actionAcceptCall, actionEndCall, "fr")
+			return vh.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, "fr")
 		default:
 			return vh.Twigen.GatherLanguage(r.Context(), actionConnectAgent, false)
 		}

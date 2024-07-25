@@ -88,6 +88,12 @@
               },
               "type": "array"
             },
+            "recordInboundCalls": {
+              "type": "boolean"
+            },
+            "recordOutboundCalls": {
+              "type": "boolean"
+            },
             "timeouts": {
               "properties": {
                 "dialAgents": {
@@ -123,6 +129,8 @@
           "type": "object",
           "required": [
             "agentDIDs",
+            "recordInboundCalls",
+            "recordOutboundCalls",
             "timeouts",
             "voice"
           ]

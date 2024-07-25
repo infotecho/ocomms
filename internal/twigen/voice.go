@@ -23,7 +23,6 @@ func (v Voice) voice(ctx context.Context, verbs []twiml.Element) string {
 	if err != nil {
 		v.Logger.ErrorContext(ctx, "Error generating TwiML response", "err", err)
 	}
-
 	return res
 }
 
@@ -32,7 +31,6 @@ func (v *Voice) say(ctx context.Context, lang string, getter func(m i18n.Message
 	if err != nil {
 		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
 	}
-
 	return &twiml.VoiceSay{
 		Message: msg,
 		Voice:   v.Config.Twilio.Voice[lang],
@@ -49,7 +47,6 @@ func (v *Voice) sayTemplate(
 	if err != nil {
 		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
 	}
-
 	return &twiml.VoiceSay{
 		Message: msg,
 		Voice:   v.Config.Twilio.Voice[lang],
@@ -71,9 +68,13 @@ func (v Voice) GatherOutboundNumber(ctx context.Context, actionDialOut string) s
 }
 
 // DialOut generates TwiML to dial out as the company.
-func (v Voice) DialOut(ctx context.Context, number string) string {
+func (v Voice) DialOut(ctx context.Context, callbackRecordingStatus string, number string) string {
 	dial := &twiml.VoiceDial{
 		Number: number,
+	}
+	if v.Config.Twilio.RecordOutboundCalls {
+		dial.Record = "record-from-answer"
+		dial.RecordingStatusCallback = callbackRecordingStatus
 	}
 	return v.voice(ctx, []twiml.Element{dial})
 }
@@ -110,7 +111,13 @@ func (v Voice) GatherLanguage(ctx context.Context, actionConnectAgent string, in
 }
 
 // DialAgent generates TwiML to connect a caller to an agent.
-func (v Voice) DialAgent(ctx context.Context, actionAcceptCall string, actionEndCall string, lang string) string {
+func (v Voice) DialAgent(
+	ctx context.Context,
+	callbackRecordingStatus string,
+	actionAcceptCall string,
+	actionEndCall string,
+	lang string,
+) string {
 	sayHold := v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.PleaseHold })
 
 	agentDIDs := v.Config.Twilio.AgentDIDs
@@ -126,6 +133,10 @@ func (v Voice) DialAgent(ctx context.Context, actionAcceptCall string, actionEnd
 		Action:        actionEndCall + "?lang=" + lang,
 		InnerElements: numbers,
 		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.DialAgents),
+	}
+	if v.Config.Twilio.RecordInboundCalls {
+		dialAgents.Record = "record-from-answer"
+		dialAgents.RecordingStatusCallback = callbackRecordingStatus
 	}
 
 	return v.voice(ctx, []twiml.Element{sayHold, dialAgents})

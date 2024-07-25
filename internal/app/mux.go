@@ -9,12 +9,13 @@ import (
 )
 
 const (
-	voiceInbound          = "/voice/inbound"
-	voiceDialOut          = "/voice/dial-out"
-	voiceConnectAgent     = "/voice/connect-agent"
 	voiceAcceptCall       = "/voice/accept-call"
 	voiceConfirmConnected = "/voice/confirm-connected"
+	voiceConnectAgent     = "/voice/connect-agent"
+	voiceDialOut          = "/voice/dial-out"
 	voiceEndCall          = "/voice/end-call"
+	voiceInbound          = "/voice/inbound"
+	voiceRecordingStatus  = "/voice/recording-status-callback"
 	voiceStartRecording   = "/voice/start-recording"
 )
 
@@ -28,8 +29,8 @@ func (mf muxFactory) Mux() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc(voiceInbound, mf.VoiceHandler.Inbound(voiceDialOut, voiceConnectAgent))
-	mux.HandleFunc(voiceDialOut, mf.VoiceHandler.DialOut())
-	mux.HandleFunc(voiceConnectAgent, mf.VoiceHandler.ConnectAgent(voiceConnectAgent, voiceAcceptCall, voiceEndCall))
+	mux.HandleFunc(voiceDialOut, mf.VoiceHandler.DialOut(voiceRecordingStatus))
+	mux.HandleFunc(voiceConnectAgent, mf.VoiceHandler.ConnectAgent(voiceRecordingStatus, voiceConnectAgent, voiceAcceptCall, voiceEndCall))
 	mux.HandleFunc(voiceAcceptCall, mf.VoiceHandler.AcceptCall(voiceConfirmConnected))
 	mux.HandleFunc(voiceConfirmConnected, mf.VoiceHandler.ConfirmConnected())
 	mux.HandleFunc(voiceEndCall, mf.VoiceHandler.EndCall(voiceStartRecording))
