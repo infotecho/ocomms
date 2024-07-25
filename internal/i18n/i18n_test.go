@@ -68,6 +68,24 @@ func Test_Message_invalidLang(t *testing.T) {
 	}
 }
 
+func Test_Message_replacementExpected(t *testing.T) {
+	t.Parallel()
+
+	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{})
+	if err != nil {
+		t.Errorf("Failed to load message provider: %s", err)
+	}
+
+	langSelect, err := mp.Message("en", func(m i18n.Messages) string { return m.Voice.LangSelect })
+
+	if err == nil || !strings.Contains(err.Error(), "digit") {
+		t.Errorf("Expected error missing 'digit' replacement, got: %s", err)
+	}
+	if diff := cmp.Diff("For service in English, press .", langSelect); diff != "" {
+		t.Error(diff)
+	}
+}
+
 func Test_MessageReplace(t *testing.T) {
 	t.Parallel()
 
@@ -107,7 +125,6 @@ func Test_MessageReplace_InvalidReplacement(t *testing.T) {
 	if err == nil || !strings.Contains(err.Error(), "digit") {
 		t.Errorf("Expected error missing 'digit' replacement, got: %s", err)
 	}
-
 	if diff := cmp.Diff("For service in English, press .", langSelect); diff != "" {
 		t.Error(diff)
 	}

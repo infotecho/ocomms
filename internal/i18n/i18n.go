@@ -35,17 +35,7 @@ func NewMessageProvider(logger *slog.Logger, config config.Config) (*MessageProv
 // Message returns a localized message given lang and getter,
 // which identifies which property to retrieve on the Messages object.
 func (mp MessageProvider) Message(lang string, getter func(Messages) string) (string, error) {
-	messages, ok := mp.messages[lang]
-
-	if !ok {
-		defaultLang := mp.config.I18N.DefaultLang
-		err := fmt.Errorf("no messages exist for lang '%s'. Defaulting to lang '%s'", lang, defaultLang) //nolint:err113
-		messages = mp.messages[defaultLang]
-
-		return getter(messages), err
-	}
-
-	return getter(messages), nil
+	return mp.MessageReplace(lang, getter, map[string]string{})
 }
 
 // MessageReplace returns a localized message given lang, getter,
@@ -57,10 +47,15 @@ func (mp MessageProvider) MessageReplace(
 ) (string, error) {
 	errs := []error{}
 
-	msg, err := mp.Message(lang, getter)
-	if err != nil {
+	messages, ok := mp.messages[lang]
+	if !ok {
+		defaultLang := mp.config.I18N.DefaultLang
+		err := fmt.Errorf("no messages exist for lang '%s'. Defaulting to lang '%s'", lang, defaultLang) //nolint:err113
 		errs = append(errs, err)
+		messages = mp.messages[defaultLang]
 	}
+
+	msg := getter(messages)
 
 	re := regexp.MustCompile(`\{[^\}]*\}`)
 
@@ -77,7 +72,7 @@ func (mp MessageProvider) MessageReplace(
 		return val
 	})
 
-	err = nil
+	var err error
 	if len(errs) > 0 {
 		err = errors.Join(errs...)
 	}
