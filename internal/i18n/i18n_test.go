@@ -23,7 +23,7 @@ func Test_Message_en(t *testing.T) {
 		t.Error(err)
 	}
 
-	if diff := cmp.Diff("Welcome to InfoTech Ottawa.", welcome); diff != "" {
+	if diff := cmp.Diff("Welcome to Infotech Ottawa.", welcome); diff != "" {
 		t.Error(diff)
 	}
 }
@@ -63,7 +63,7 @@ func Test_Message_invalidLang(t *testing.T) {
 		t.Errorf("Expected error invalid lang, got: %s", err)
 	}
 
-	if diff := cmp.Diff("Welcome to InfoTech Ottawa.", welcome); diff != "" {
+	if diff := cmp.Diff("Welcome to Infotech Ottawa.", welcome); diff != "" {
 		t.Error(diff)
 	}
 }
