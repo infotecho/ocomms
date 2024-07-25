@@ -88,6 +88,12 @@
               },
               "type": "array"
             },
+            "languages": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
             "recordInboundCalls": {
               "type": "boolean"
             },
@@ -117,22 +123,16 @@
                 "gatherOutboundNumber",
                 "gatherAcceptCall"
               ]
-            },
-            "voice": {
-              "additionalProperties": {
-                "type": "string"
-              },
-              "type": "object"
             }
           },
           "additionalProperties": false,
           "type": "object",
           "required": [
             "agentDIDs",
+            "languages",
             "recordInboundCalls",
             "recordOutboundCalls",
-            "timeouts",
-            "voice"
+            "timeouts"
           ]
         }
       },

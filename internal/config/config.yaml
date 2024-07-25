@@ -24,6 +24,6 @@ twilio:
     gatherAcceptCall: 5
     gatherLanguage: 10
     gatherOutboundNumber: 10
-  voice:
-    en: Polly.Stephen-Neural
-    fr: Polly.Liam-Neural
+  languages:
+    en: en-US
+    fr: fr-CA

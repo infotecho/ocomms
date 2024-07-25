@@ -30,16 +30,16 @@ type Config struct {
 	} `json:"i18n"`
 
 	Twilio struct {
-		AgentDIDs           []string `json:"agentDIDs"`
-		RecordInboundCalls  bool     `json:"recordInboundCalls"`
-		RecordOutboundCalls bool     `json:"recordOutboundCalls"`
-		Timeouts            struct { // time in seconds
+		AgentDIDs           []string          `json:"agentDIDs"`
+		Languages           map[string]string `json:"languages"`
+		RecordInboundCalls  bool              `json:"recordInboundCalls"`
+		RecordOutboundCalls bool              `json:"recordOutboundCalls"`
+		Timeouts            struct {          // time in seconds
 			DialAgents           int `json:"dialAgents"`
 			GatherLanguage       int `json:"gatherLanguage"`
 			GatherOutboundNumber int `json:"gatherOutboundNumber"`
 			GatherAcceptCall     int `json:"gatherAcceptCall"`
 		} `json:"timeouts"`
-		Voice map[string]string `json:"voice"`
 	} `json:"twilio"`
 }
 

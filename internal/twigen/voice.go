@@ -3,6 +3,7 @@ package twigen
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"strconv"
 
@@ -31,9 +32,15 @@ func (v *Voice) say(ctx context.Context, lang string, getter func(m i18n.Message
 	if err != nil {
 		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
 	}
+
+	voiceLang, ok := v.Config.Twilio.Languages[lang]
+	if !ok {
+		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", voiceLang))
+	}
+
 	return &twiml.VoiceSay{
-		Message: msg,
-		Voice:   v.Config.Twilio.Voice[lang],
+		Language: voiceLang,
+		Message:  msg,
 	}
 }
 
@@ -47,17 +54,23 @@ func (v *Voice) sayTemplate(
 	if err != nil {
 		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
 	}
+
+	voiceLang, ok := v.Config.Twilio.Languages[lang]
+	if !ok {
+		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", voiceLang))
+	}
+
 	return &twiml.VoiceSay{
-		Message: msg,
-		Voice:   v.Config.Twilio.Voice[lang],
+		Language: voiceLang,
+		Message:  msg,
 	}
 }
 
 // GatherOutboundNumber generates TwiML gather a phone number to place an outbound call.
 func (v Voice) GatherOutboundNumber(ctx context.Context, actionDialOut string) string {
 	say := &twiml.VoiceSay{
-		Message: "Enter the number you wish to call, then press pound.",
-		Voice:   v.Config.Twilio.Voice["en"],
+		Language: "en-US",
+		Message:  "Enter the number you wish to call, then press pound.",
 	}
 	gather := &twiml.VoiceGather{
 		Action:        actionDialOut,
