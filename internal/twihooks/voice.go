@@ -49,10 +49,9 @@ func (vh VoiceHandler) lang(r *http.Request) string {
 // Inbound handles inbound calls.
 func (vh VoiceHandler) Inbound(actionDialOut string, actionConnectAgent string) http.HandlerFunc {
 	return vh.handler(func(r *http.Request) string {
-		agentDIDs := vh.Config.Twilio.AgentDIDs
-		from := r.Header.Get("From")
+		vh.parseForm(r)
 
-		if slices.Contains(agentDIDs, from) {
+		if slices.Contains(vh.Config.Twilio.AgentDIDs, r.Form.Get("From")) {
 			return vh.Twigen.GatherOutboundNumber(r.Context(), actionDialOut)
 		}
 
