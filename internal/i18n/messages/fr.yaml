@@ -6,5 +6,5 @@ voice:
   pleaseHold: Veuillez patienter alors que nous transférons votre appel.
   voicemail: >
     Désolé, nous sommes actuellement occupés. Pour laisser un message, appuyer sur le {digit}...
-    Pendant l'enregistrement, vous pouvez appuyer encore une fois sur le {digit} pour effacer votre message et recommencer.
+    Pendant l'enregistrement, vous pouvez appuyer encore une fois sur le {digit} pour recommencer.
   welcome: Vous avez rejoint l'infothèque d'Ottawa.
