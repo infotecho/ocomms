@@ -16,7 +16,8 @@ const (
 	voiceEndCall          = "/voice/end-call"
 	voiceInbound          = "/voice/inbound"
 	voiceRecordingStatus  = "/voice/recording-status-callback"
-	voiceStartRecording   = "/voice/start-recording"
+	voiceRecordingStart   = "/voice/start-voicemail"
+	voiceRecordingEnd     = "/voice/end-voicemail"
 )
 
 type muxFactory struct {
@@ -35,7 +36,11 @@ func (mf muxFactory) Mux() *http.ServeMux {
 	)
 	mux.HandleFunc(voiceAcceptCall, mf.VoiceHandler.AcceptCall(voiceConfirmConnected))
 	mux.HandleFunc(voiceConfirmConnected, mf.VoiceHandler.ConfirmConnected())
-	mux.HandleFunc(voiceEndCall, mf.VoiceHandler.EndCall(voiceStartRecording))
+	mux.HandleFunc(voiceEndCall, mf.VoiceHandler.EndCall(voiceRecordingStart))
+	mux.HandleFunc(voiceRecordingStart,
+		mf.VoiceHandler.StartVoicemail(voiceRecordingStatus, voiceRecordingStart, voiceRecordingEnd),
+	)
+	mux.HandleFunc(voiceRecordingEnd, mf.VoiceHandler.EndVoicemail(voiceRecordingStatus, voiceRecordingEnd))
 
 	return mux
 }

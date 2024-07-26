@@ -19,7 +19,16 @@
             "pleaseHold": {
               "type": "string"
             },
+            "recordAfterTone": {
+              "type": "string"
+            },
+            "rerecord": {
+              "type": "string"
+            },
             "voicemail": {
+              "type": "string"
+            },
+            "voicemailRepeat": {
               "type": "string"
             },
             "welcome": {
@@ -33,7 +42,10 @@
             "confirmConnected",
             "langSelect",
             "pleaseHold",
+            "recordAfterTone",
+            "rerecord",
             "voicemail",
+            "voicemailRepeat",
             "welcome"
           ]
         }

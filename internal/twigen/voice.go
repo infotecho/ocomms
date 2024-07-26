@@ -66,6 +66,11 @@ func (v *Voice) sayTemplate(
 	}
 }
 
+// Noop generates an empty TwiML responds that instructs Twilio to do nothing.
+func (v Voice) Noop(ctx context.Context) string {
+	return v.voice(ctx, []twiml.Element{})
+}
+
 // GatherOutboundNumber generates TwiML gather a phone number to place an outbound call.
 func (v Voice) GatherOutboundNumber(ctx context.Context, actionDialOut string) string {
 	say := &twiml.VoiceSay{
@@ -176,11 +181,58 @@ func (v Voice) SayConnected(ctx context.Context, lang string) string {
 	return v.voice(ctx, []twiml.Element{say})
 }
 
-// GatherVoicemail generates TwiML to instruct callers to leave a voicemail.
-func (v Voice) GatherVoicemail(ctx context.Context, _ string, lang string) string {
-	say := v.sayTemplate(ctx, lang,
+// GatherVoicemailStart generates TwiML to instruct callers to leave a voicemail.
+func (v Voice) GatherVoicemailStart(
+	ctx context.Context,
+	actionStartVoicemail string,
+	recordKey string,
+	lang string,
+) string {
+	say1 := v.sayTemplate(ctx, lang,
 		func(m i18n.Messages) string { return m.Voice.Voicemail },
-		map[string]string{"digit": "9"},
+		map[string]string{"digit": recordKey},
 	)
-	return v.voice(ctx, []twiml.Element{say})
+	gather1 := &twiml.VoiceGather{
+		Action:        actionStartVoicemail + "?lang=" + lang,
+		InnerElements: []twiml.Element{say1},
+		NumDigits:     "1",
+		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherStartVoicemail),
+	}
+
+	say2 := v.sayTemplate(ctx, lang,
+		func(m i18n.Messages) string { return m.Voice.VoicemailRepeat },
+		map[string]string{"digit": recordKey},
+	)
+	gather2 := &twiml.VoiceGather{
+		Action:        actionStartVoicemail + "?lang=" + lang,
+		InnerElements: []twiml.Element{say2},
+		NumDigits:     "1",
+		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherStartVoicemail),
+	}
+
+	return v.voice(ctx, []twiml.Element{gather1, gather2})
+}
+
+// RecordVoicemail generates TwiML instructing Twilio to record a caller's voicemail.
+func (v Voice) RecordVoicemail(
+	ctx context.Context,
+	callbackRecordingStatus string,
+	actionEndVoicemail string,
+	recordKey string,
+	lang string,
+	rerecord bool,
+) string {
+	var say *twiml.VoiceSay
+	if rerecord {
+		say = v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.ReRecord })
+	} else {
+		say = v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.RecordAfterTone })
+	}
+	record := &twiml.VoiceRecord{
+		Action:                  actionEndVoicemail + "?lang=" + lang,
+		FinishOnKey:             recordKey,
+		RecordingStatusCallback: callbackRecordingStatus,
+		Timeout:                 "0",
+	}
+	return v.voice(ctx, []twiml.Element{say, record})
 }

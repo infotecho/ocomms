@@ -4,7 +4,10 @@ voice:
   confirmConnected: Connected.
   langSelect: For service in English, press {digit}.
   pleaseHold: Please hold while we transfer your call.
+  recordAfterTone: Record your message after the tone.
+  rerecord: "Message deleted. Record your new message after the tone."
   voicemail: >
     Sorry, we can't come to the phone right now. Press {digit} to leave a message, and we'll call you back as soon as we can...
     At any point during the recording, you can press {digit} again to discard your message and start over.
+  voicemailRepeat: Press {digit} to leave a message.
   welcome: Welcome to Infotech Ottawa.

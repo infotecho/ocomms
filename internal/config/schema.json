@@ -113,6 +113,9 @@
                 },
                 "gatherAcceptCall": {
                   "type": "integer"
+                },
+                "gatherStartVoicemail": {
+                  "type": "integer"
                 }
               },
               "additionalProperties": false,
@@ -121,7 +124,8 @@
                 "dialAgents",
                 "gatherLanguage",
                 "gatherOutboundNumber",
-                "gatherAcceptCall"
+                "gatherAcceptCall",
+                "gatherStartVoicemail"
               ]
             }
           },

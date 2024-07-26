@@ -10,6 +10,10 @@ import (
 	"github.com/infotecho/ocomms/internal/twigen"
 )
 
+const (
+	keyRecordVoicemail = "9"
+)
+
 // VoiceHandler implements Twilio Programmable VoiceHandler hooks.
 type VoiceHandler struct {
 	Config config.Config
@@ -117,17 +121,67 @@ func (vh VoiceHandler) EndCall(actionStartRecording string) http.HandlerFunc {
 
 		callStatus := r.Form.Get("DialCallStatus")
 		callDuration := r.Form.Get("DialCallDuration")
+
 		switch {
 		case callStatus == "busy",
 			callStatus == "no-answer",
-			// indicates call went agent's to voicemail - no key pressed to accept call
+			// indicates call went to agent's voicemail - no key pressed to accept call
 			callStatus == "completed" && callDuration == "":
-			return vh.Twigen.GatherVoicemail(r.Context(), actionStartRecording, vh.lang(r))
+			return vh.Twigen.GatherVoicemailStart(r.Context(), actionStartRecording, keyRecordVoicemail, vh.lang(r))
 		case callStatus == "completed":
-			return ""
+			return vh.Twigen.Noop(r.Context())
 		default:
 			vh.Logger.ErrorContext(r.Context(), "Unexpected DialCallStatus: "+callStatus)
-			return ""
+			return vh.Twigen.Noop(r.Context())
 		}
+	})
+}
+
+// StartVoicemail handles a key press after a caller was invited to press 9 to leave a message.
+func (vh VoiceHandler) StartVoicemail(
+	callbackRecordingStatus string,
+	actionStartVoicemail string,
+	actionEndVoicemail string,
+) http.HandlerFunc {
+	return vh.handler(func(r *http.Request) string {
+		vh.parseForm(r)
+
+		digits := r.Form.Get("Digits")
+
+		if digits != keyRecordVoicemail {
+			return vh.Twigen.GatherVoicemailStart(r.Context(), actionStartVoicemail, keyRecordVoicemail, vh.lang(r))
+		}
+
+		return vh.Twigen.RecordVoicemail(
+			r.Context(),
+			callbackRecordingStatus,
+			actionEndVoicemail,
+			keyRecordVoicemail,
+			vh.lang(r),
+			false,
+		)
+	})
+}
+
+// EndVoicemail handles the end of a voicemail recording
+// either due to a keypress (rerecord) or caller hangup (end recording).
+func (vh VoiceHandler) EndVoicemail(callbackRecordingStatus string, actionEndVoicemail string) http.HandlerFunc {
+	return vh.handler(func(r *http.Request) string {
+		vh.parseForm(r)
+
+		digits := r.Form.Get("Digits")
+
+		if digits == keyRecordVoicemail {
+			return vh.Twigen.RecordVoicemail(
+				r.Context(),
+				callbackRecordingStatus,
+				actionEndVoicemail,
+				keyRecordVoicemail,
+				vh.lang(r),
+				true,
+			)
+		}
+
+		return vh.Twigen.Noop(r.Context())
 	})
 }

@@ -24,6 +24,7 @@ twilio:
     gatherAcceptCall: 5
     gatherLanguage: 10
     gatherOutboundNumber: 10
+    gatherStartVoicemail: 10
   languages:
     en: en-US
     fr: fr-CA

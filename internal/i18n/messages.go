@@ -9,7 +9,10 @@ type Messages struct {
 		ConfirmConnected string `json:"confirmConnected"`
 		LangSelect       string `json:"langSelect"`
 		PleaseHold       string `json:"pleaseHold"`
+		RecordAfterTone  string `json:"recordAfterTone"`
+		ReRecord         string `json:"rerecord"`
 		Voicemail        string `json:"voicemail"`
+		VoicemailRepeat  string `json:"voicemailRepeat"`
 		Welcome          string `json:"welcome"`
 	} `json:"voice"`
 }

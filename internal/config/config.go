@@ -39,6 +39,7 @@ type Config struct {
 			GatherLanguage       int `json:"gatherLanguage"`
 			GatherOutboundNumber int `json:"gatherOutboundNumber"`
 			GatherAcceptCall     int `json:"gatherAcceptCall"`
+			GatherStartVoicemail int `json:"gatherStartVoicemail"`
 		} `json:"timeouts"`
 	} `json:"twilio"`
 }
