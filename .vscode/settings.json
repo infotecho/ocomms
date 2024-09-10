@@ -1,10 +1,13 @@
 {
+  "editor.defaultFormatter": "EditorConfig.EditorConfig",
   "[go]": {
     "editor.defaultFormatter": "golang.go"
   },
-  "editor.defaultFormatter": "EditorConfig.EditorConfig",
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
   "editor.formatOnSave": true,
   "files.trimFinalNewlines": true,
   "go.buildTags": "tools",
-  "go.lintTool": "golangci-lint"
+  "go.lintTool": "golangci-lint",
 }

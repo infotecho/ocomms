@@ -1,4 +1,5 @@
 resource "google_iam_workload_identity_pool" "ci" {
+  depends_on                = [google_project_service.iam]
   workload_identity_pool_id = "ci-cd"
   display_name              = "CI/CD Runners"
   description               = "Workload identity pool for CI/CD runners"
@@ -20,10 +21,9 @@ resource "google_iam_workload_identity_pool_provider" "github" {
   }
 }
 
-data "google_project" "main" {}
 resource "google_project_iam_binding" "ci_run_admin" {
-  project = data.google_project.main.project_id
-  role = "roles/run.admin"
+  project = data.google_project.ocomms.project_id
+  role    = "roles/run.admin"
   members = [
     "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.ci.name}/attribute.repository/${var.github_repo_name}"
   ]
