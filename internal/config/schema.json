@@ -88,6 +88,22 @@
               },
               "type": "array"
             },
+            "auth": {
+              "properties": {
+                "keySID": {
+                  "type": "string"
+                },
+                "keySecret": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "keySID",
+                "keySecret"
+              ]
+            },
             "languages": {
               "additionalProperties": {
                 "type": "string"
@@ -133,6 +149,7 @@
           "type": "object",
           "required": [
             "agentDIDs",
+            "auth",
             "languages",
             "recordInboundCalls",
             "recordOutboundCalls",

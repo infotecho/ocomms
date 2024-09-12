@@ -10,4 +10,7 @@
   "files.trimFinalNewlines": true,
   "go.buildTags": "tools",
   "go.lintTool": "golangci-lint",
+  "yaml.schemas": {
+    "internal/config/schema.json": "internal/config/config.yaml"
+  }
 }

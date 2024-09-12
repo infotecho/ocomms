@@ -30,7 +30,11 @@ type Config struct {
 	} `json:"i18n"`
 
 	Twilio struct {
-		AgentDIDs           []string          `json:"agentDIDs"`
+		AgentDIDs []string `json:"agentDIDs"`
+		Auth      struct {
+			KeySID    string `json:"keySID"`
+			KeySecret string `json:"keySecret"`
+		} `json:"auth"`
 		Languages           map[string]string `json:"languages"`
 		RecordInboundCalls  bool              `json:"recordInboundCalls"`
 		RecordOutboundCalls bool              `json:"recordOutboundCalls"`

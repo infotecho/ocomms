@@ -2,10 +2,13 @@ package config
 
 import (
 	_ "embed"
+	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 	"reflect"
 
+	_ "github.com/joho/godotenv/autoload" // load .env
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
 )
@@ -15,15 +18,25 @@ var configFile []byte
 
 // Load reads app config from config.yaml and unmarshals it to a Config struct.
 func Load() (Config, error) {
-	var configMap map[string]any
+	var errs []error
+	expanded := os.Expand(string(configFile), func(s string) string {
+		envVar := os.Getenv(s)
+		if envVar == "" {
+			errs = append(errs, fmt.Errorf("undefined environment variable %s", s))
+		}
+		return envVar
+	})
+	if len(errs) > 0 {
+		return Config{}, errors.Join(errs...)
+	}
 
-	err := yaml.Unmarshal(configFile, &configMap)
+	var configMap map[string]any
+	err := yaml.Unmarshal([]byte(expanded), &configMap)
 	if err != nil {
 		return Config{}, fmt.Errorf("failed to unmarshal config.yaml: %w", err)
 	}
 
 	var config Config
-
 	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
 		DecodeHook: mapstructure.ComposeDecodeHookFunc(
 			mapstructure.StringToTimeDurationHookFunc(),

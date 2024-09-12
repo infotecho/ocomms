@@ -1,4 +1,3 @@
-# yaml-language-server: $schema=./schema.json
 server:
   port: "8080"
   timeouts:
@@ -17,6 +16,9 @@ i18n:
 twilio:
   agentDIDs:
     - "6138160938"
+  auth:
+    keySID: ${TWILIO_API_KEY_SID}
+    keySecret: ${TWILIO_API_KEY_SECRET}
   recordInboundCalls: true
   recordOutboundCalls: true
   timeouts:
