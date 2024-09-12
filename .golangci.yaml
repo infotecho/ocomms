@@ -15,6 +15,7 @@ linters:
     - tagliatelle
     - wsl
     - nlreturn
+    - err113
 
 linters-settings:
   varnamelen:

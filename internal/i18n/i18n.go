@@ -50,7 +50,7 @@ func (mp MessageProvider) MessageReplace(
 	messages, ok := mp.messages[lang]
 	if !ok {
 		defaultLang := mp.config.I18N.DefaultLang
-		err := fmt.Errorf("no messages exist for lang '%s'. Defaulting to lang '%s'", lang, defaultLang) //nolint:err113
+		err := fmt.Errorf("no messages exist for lang '%s'. Defaulting to lang '%s'", lang, defaultLang)
 		errs = append(errs, err)
 		messages = mp.messages[defaultLang]
 	}
@@ -64,7 +64,7 @@ func (mp MessageProvider) MessageReplace(
 
 		val, ok := replacements[key]
 		if !ok {
-			errs = append(errs, fmt.Errorf("no replacement provided for '%s' in i18n message", key)) //nolint:err113
+			errs = append(errs, fmt.Errorf("no replacement provided for '%s' in i18n message", key))
 
 			return ""
 		}
