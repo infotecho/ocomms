@@ -12,6 +12,7 @@ linters:
     - depguard
     - execinquery # deprecated
     - gomnd       # deprecated
+    - exportloopref # deprecated
     - tagliatelle
     - wsl
     - nlreturn

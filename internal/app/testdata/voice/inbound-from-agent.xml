@@ -1,0 +1,5 @@
+<Response>
+	<Gather action="/voice/dial-out" timeout="10">
+		<Say language="en-US">Enter the number you wish to call, then press pound.</Say>
+	</Gather>
+</Response>

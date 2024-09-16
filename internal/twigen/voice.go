@@ -35,7 +35,7 @@ func (v *Voice) say(ctx context.Context, lang string, getter func(m i18n.Message
 
 	voiceLang, ok := v.Config.Twilio.Languages[lang]
 	if !ok {
-		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", voiceLang))
+		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", lang))
 	}
 
 	return &twiml.VoiceSay{
@@ -57,7 +57,7 @@ func (v *Voice) sayTemplate(
 
 	voiceLang, ok := v.Config.Twilio.Languages[lang]
 	if !ok {
-		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", voiceLang))
+		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", lang))
 	}
 
 	return &twiml.VoiceSay{

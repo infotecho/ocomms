@@ -15,7 +15,7 @@ i18n:
 
 twilio:
   agentDIDs:
-    - "6138160938"
+    - "+16138160938"
   auth:
     keySID: ${TWILIO_API_KEY_SID}
     keySecret: ${TWILIO_API_KEY_SECRET}

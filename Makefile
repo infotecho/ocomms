@@ -1,7 +1,5 @@
 .DEFAULT_GOAL = check
 
-.PHONY: fmt lint fix test check run
-
 fmt:
 	go fmt ./...
 
@@ -24,6 +22,9 @@ vulncheck:
 
 test:
 	go test ./...
+
+testupdate:
+	go test ./internal/app -update
 
 check: generate schemavalidate fmt lint vulncheck test
 
