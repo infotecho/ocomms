@@ -26,6 +26,10 @@ test:
 testupdate:
 	go test ./internal/app -update
 
+cover:
+	go test ./... -cover -coverprofile=coverage.out
+	go tool cover -html=coverage.out
+
 check: generate schemavalidate fmt lint vulncheck test
 
 run:
