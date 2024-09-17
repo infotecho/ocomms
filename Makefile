@@ -24,6 +24,7 @@ test:
 	go test ./...
 
 testupdate:
+	rm -rf ./internal/app/testdata
 	go test ./internal/app -update
 
 cover:

@@ -121,9 +121,15 @@ func rewriteGoldenFile(t *testing.T, path string, got []byte) {
 	t.Helper()
 
 	path = filepath.Clean(path)
+
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o750); err != nil {
+		t.Fatalf("Failed to mkdir %s: %v", dir, err)
+	}
+
 	file, err := os.Create(path)
 	if err != nil {
-		t.Fatalf("Failed to create %v", err)
+		t.Fatalf("Failed to create %s: %v", path, err)
 	}
 	defer func() {
 		if err = file.Close(); err != nil {
@@ -132,7 +138,7 @@ func rewriteGoldenFile(t *testing.T, path string, got []byte) {
 	}()
 
 	t.Logf("Rewriting %s", path)
-	if err = os.WriteFile(path, got, 0600); err != nil { //nolint:gofumpt
+	if err = os.WriteFile(path, got, 0o600); err != nil {
 		t.Fatalf("Failed to write XML to %s: %v", path, err)
 	}
 }
