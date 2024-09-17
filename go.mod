@@ -6,7 +6,6 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/invopop/jsonschema v0.12.0
 	github.com/joho/godotenv v1.5.1
-	github.com/lmittmann/tint v1.0.4
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/twilio/twilio-go v1.22.1
 	gopkg.in/yaml.v3 v3.0.1
