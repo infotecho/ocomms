@@ -1,0 +1,8 @@
+-- en --
+<Response>
+	<Say language="en-US">Connected.</Say>
+</Response>
+-- fr --
+<Response>
+	<Say language="fr-CA">Connecté.</Say>
+</Response>

@@ -179,7 +179,7 @@ func runTableTest(t *testing.T, serverURL string, test TableTestInput) {
 	}
 }
 
-func TestGolden(t *testing.T) { //nolint:paralleltest, tparallel
+func TestGolden(t *testing.T) { //nolint:paralleltest, tparallel, funlen
 	serverURL := setup(t)
 
 	tests := []TableTestInput{
@@ -197,10 +197,121 @@ func TestGolden(t *testing.T) { //nolint:paralleltest, tparallel
 			want: "testdata/voice/inbound-agent.xml",
 			lang: "en",
 		},
+
+		{
+			hook: "/voice/dial-out",
+			form: url.Values{
+				"Digits": []string{"1234567890"},
+			},
+			want: "testdata/voice/dial-out.xml",
+			lang: "en",
+		},
+
+		{
+			hook: "/voice/connect-agent",
+			form: url.Values{
+				"To":     []string{"1234567890"},
+				"Digits": []string{"1"},
+			},
+			want: "testdata/voice/connect-agent-en.xml",
+			lang: "en",
+		},
+		{
+			hook: "/voice/connect-agent",
+			form: url.Values{
+				"To":     []string{"1234567890"},
+				"Digits": []string{"2"},
+			},
+			want: "testdata/voice/connect-agent-fr.xml",
+			lang: "en",
+		},
+		{
+			hook: "/voice/connect-agent",
+			form: url.Values{
+				"Digits": []string{"3"},
+			},
+			want: "testdata/voice/invalid-lang-select.xml",
+			lang: "en",
+		},
+
 		{
 			hook: "/voice/accept-call",
 			form: url.Values{},
 			want: "testdata/voice/accept-call.xml",
+		},
+
+		{
+			hook: "/voice/confirm-connected",
+			form: url.Values{},
+			want: "testdata/voice/confirm-connected.xml",
+		},
+
+		{
+			hook: "/voice/end-call",
+			form: url.Values{
+				"DialCallStatus": []string{"busy"},
+			},
+			want: "testdata/voice/go-to-voicemail.xml",
+		},
+		{
+			hook: "/voice/end-call",
+			form: url.Values{
+				"DialCallStatus": []string{"no-answer"},
+			},
+			want: "testdata/voice/go-to-voicemail.xml",
+		},
+		{
+			hook: "/voice/end-call",
+			form: url.Values{
+				"DialCallStatus":   []string{"completed"},
+				"DialCallDuration": nil,
+			},
+			want: "testdata/voice/go-to-voicemail.xml",
+		},
+		{
+			hook: "/voice/end-call",
+			form: url.Values{
+				"DialCallStatus":   []string{"completed"},
+				"DialCallDuration": []string{"10"},
+			},
+			want: "testdata/voice/noop.xml",
+		},
+		{
+			hook: "/voice/end-call",
+			form: url.Values{
+				"DialCallStatus": []string{"someotherstatus"},
+			},
+			want: "testdata/voice/noop.xml",
+		},
+
+		{
+			hook: "/voice/start-voicemail",
+			form: url.Values{
+				"Digits": []string{"8"},
+			},
+			want: "testdata/voice/go-to-voicemail.xml",
+		},
+		{
+			hook: "/voice/start-voicemail",
+			form: url.Values{
+				"Digits": []string{"9"},
+			},
+			want: "testdata/voice/record-voicemail.xml",
+		},
+
+		{
+			hook: "/voice/end-voicemail",
+			form: url.Values{
+				"Digits": []string{"9"},
+			},
+			want: "testdata/voice/rerecord-voicemail.xml",
+		},
+		{
+			hook: "/voice/end-voicemail",
+			form: url.Values{
+				"Digits": []string{"hangup"},
+			},
+			want: "testdata/voice/noop.xml",
 		},
 	}
 

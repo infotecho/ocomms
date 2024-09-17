@@ -1,0 +1,11 @@
+-- en --
+<Response>
+	<Gather action="/voice/connect-agent" numDigits="1" timeout="10">
+		<Say language="en-US">For service in English, press 1.</Say>
+		<Say language="fr-CA">Pour le service en français, appuyer sur le 2.</Say>
+	</Gather>
+	<Gather action="/voice/connect-agent" numDigits="1" timeout="10">
+		<Say language="en-US">For service in English, press 1.</Say>
+		<Say language="fr-CA">Pour le service en français, appuyer sur le 2.</Say>
+	</Gather>
+</Response>

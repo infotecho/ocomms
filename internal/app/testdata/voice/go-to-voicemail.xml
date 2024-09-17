@@ -1,0 +1,20 @@
+-- en --
+<Response>
+	<Gather action="/voice/start-voicemail?lang=en" numDigits="1" timeout="10">
+		<Say language="en-US">Sorry, we can&apos;t come to the phone right now. Press 9 to leave a message, and we&apos;ll call you back as soon as we can... At any point during the recording, you can press 9 again to discard your message and start over.
+</Say>
+	</Gather>
+	<Gather action="/voice/start-voicemail?lang=en" numDigits="1" timeout="10">
+		<Say language="en-US">Press 9 to leave a message.</Say>
+	</Gather>
+</Response>
+-- fr --
+<Response>
+	<Gather action="/voice/start-voicemail?lang=fr" numDigits="1" timeout="10">
+		<Say language="fr-CA">Désolé, nous sommes actuellement occupés. Pour laisser un message, appuyez sur le 9... Pendant l&apos;enregistrement, vous pouvez appuyer encore une fois sur le 9 pour recommencer.
+</Say>
+	</Gather>
+	<Gather action="/voice/start-voicemail?lang=fr" numDigits="1" timeout="10">
+		<Say language="fr-CA">Pour enregister un message, appuyez sur le 9.</Say>
+	</Gather>
+</Response>

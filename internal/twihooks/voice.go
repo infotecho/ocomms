@@ -171,17 +171,17 @@ func (vh VoiceHandler) EndVoicemail(callbackRecordingStatus string, actionEndVoi
 
 		digits := r.Form.Get("Digits")
 
-		if digits == keyRecordVoicemail {
-			return vh.Twigen.RecordVoicemail(
-				r.Context(),
-				callbackRecordingStatus,
-				actionEndVoicemail,
-				keyRecordVoicemail,
-				vh.lang(r),
-				true,
-			)
+		if digits == "hangup" {
+			return vh.Twigen.Noop(r.Context())
 		}
 
-		return vh.Twigen.Noop(r.Context())
+		return vh.Twigen.RecordVoicemail(
+			r.Context(),
+			callbackRecordingStatus,
+			actionEndVoicemail,
+			keyRecordVoicemail,
+			vh.lang(r),
+			true,
+		)
 	})
 }
