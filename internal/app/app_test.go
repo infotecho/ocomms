@@ -1,4 +1,4 @@
-package app //nolint:testpackage
+package app_test
 
 import (
 	"context"
@@ -16,6 +16,7 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+	"github.com/infotecho/ocomms/internal/app"
 	"github.com/infotecho/ocomms/internal/config"
 	"golang.org/x/tools/txtar"
 )
@@ -71,7 +72,7 @@ func setup(t *testing.T) string {
 
 	config.Twilio.AgentDIDs = []string{agentDID}
 
-	muxFactory := wireDependencies(config, slog.Default()).MuxFactory
+	muxFactory := app.WireDependencies(config, slog.Default()).MuxFactory
 	mux := muxFactory.Mux()
 	server := httptest.NewServer(mux)
 	t.Cleanup(func() {

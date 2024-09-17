@@ -8,13 +8,15 @@ import (
 	"github.com/infotecho/ocomms/internal/log"
 )
 
-type serverFactory struct {
+// ServerFactory creates the O-Comms [http.Server] instance.
+type ServerFactory struct {
 	Config     config.Config
 	Logger     *slog.Logger
 	MuxFactory *muxFactory
 }
 
-func (sf serverFactory) Server() http.Server {
+// Server returns an [http.Server] instance for O-Comms.
+func (sf ServerFactory) Server() http.Server {
 	mux := sf.MuxFactory.Mux()
 	handler := appyMilddleware(mux)
 

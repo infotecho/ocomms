@@ -13,19 +13,20 @@ import (
 
 // Server returns the [http.Server] implementing the O-Comms API.
 func Server(conf config.Config, logger *slog.Logger) http.Server {
-	app := wireDependencies(conf, logger)
+	app := WireDependencies(conf, logger)
 
 	return app.Server()
 }
 
-func wireDependencies(config config.Config, logger *slog.Logger) serverFactory {
+// WireDependencies handles dependency injection.
+func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 	i18n, err := i18n.NewMessageProvider(logger, config)
 	if err != nil {
 		logger.Error("Failed to load i18n messages", "err", err)
 		panic(err)
 	}
 
-	return serverFactory{
+	return ServerFactory{
 		Config: config,
 		Logger: logger,
 		MuxFactory: &muxFactory{
