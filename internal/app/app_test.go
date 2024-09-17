@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/xml"
 	"flag"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/infotecho/ocomms/internal/config"
+	"golang.org/x/tools/txtar"
 )
 
 const (
@@ -23,6 +25,13 @@ const (
 )
 
 var update = flag.Bool("update", false, "rewrite testdata/*.xml files") //nolint:gochecknoglobals
+
+type TableTestInput struct {
+	hook string
+	form url.Values
+	want string
+	lang string
+}
 
 type XMLElement struct {
 	XMLName  xml.Name     `xml:""`
@@ -36,7 +45,7 @@ func (e *XMLElement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 
 	err := d.DecodeElement((*innerElem)(e), &start)
 	if err != nil {
-		return err //nolint:wrapcheck
+		return fmt.Errorf("failed to decode XML element: %w", err)
 	}
 
 	sort.Slice(e.Attrs, func(i, j int) bool {
@@ -71,7 +80,44 @@ func setup(t *testing.T) string {
 	return server.URL
 }
 
-func rewriteTestFile(t *testing.T, path string, gotXML XMLElement) {
+func postHook(t *testing.T, url string, form string) []byte {
+	t.Helper()
+
+	req, err := http.NewRequestWithContext(
+		context.Background(),
+		http.MethodPost,
+		url,
+		strings.NewReader(form),
+	)
+	if err != nil {
+		t.Errorf("Failed to create request: %v", err)
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		t.Errorf("Error making POST request: %v", err)
+	}
+	t.Cleanup(func() {
+		if err = res.Body.Close(); err != nil {
+			t.Errorf("Failed to close request body: %v", err)
+		}
+	})
+
+	var twiml XMLElement
+	if err = xml.NewDecoder(res.Body).Decode(&twiml); err != nil {
+		t.Errorf("Error decoding XML response: %v", err)
+	}
+
+	twimlIndented, err := xml.MarshalIndent(twiml, "", "	")
+	if err != nil {
+		t.Errorf("Failed to re-marshal response XML with indentation: %v", err)
+	}
+
+	return twimlIndented
+}
+
+func rewriteGoldenFile(t *testing.T, path string, got []byte) {
 	t.Helper()
 
 	path = filepath.Clean(path)
@@ -85,14 +131,8 @@ func rewriteTestFile(t *testing.T, path string, gotXML XMLElement) {
 		}
 	}()
 
-	indentedXML, err := xml.MarshalIndent(gotXML, "", "	")
-	if err != nil {
-		t.Fatalf("Failed to re-marshal response XML with indentation: %v", err)
-	}
-	indentedXML = append(indentedXML, byte('\n'))
-
 	t.Logf("Rewriting %s", path)
-	if err = os.WriteFile(path, indentedXML, 0600); err != nil { //nolint:gofumpt
+	if err = os.WriteFile(path, got, 0600); err != nil { //nolint:gofumpt
 		t.Fatalf("Failed to write XML to %s: %v", path, err)
 	}
 }
@@ -100,61 +140,36 @@ func rewriteTestFile(t *testing.T, path string, gotXML XMLElement) {
 func runTableTest(t *testing.T, serverURL string, test TableTestInput) {
 	t.Helper()
 
-	req, err := http.NewRequestWithContext(
-		context.Background(),
-		http.MethodPost,
-		serverURL+test.hook,
-		strings.NewReader(test.form.Encode()),
-	)
-	if err != nil {
-		t.Fatalf("Failed to create request: %v", err)
+	langs := []string{"en", "fr"}
+	if test.lang != "" {
+		langs = []string{test.lang}
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		t.Fatalf("Error making POST request: %v", err)
+	var gotArchive txtar.Archive
+	for _, lang := range langs {
+		url := serverURL + test.hook + "?lang=" + lang
+		res := postHook(t, url, test.form.Encode())
+		gotArchive.Files = append(gotArchive.Files, txtar.File{
+			Name: lang,
+			Data: res,
+		})
 	}
-	defer func() {
-		if err = res.Body.Close(); err != nil {
-			t.Fatalf("Failed to close request body: %v", err)
-		}
-	}()
 
-	var gotXML XMLElement
-	if err = xml.NewDecoder(res.Body).Decode(&gotXML); err != nil {
-		t.Fatalf("Error decoding XML response: %v", err)
-	}
+	got := txtar.Format(&gotArchive)
 
 	if *update {
-		rewriteTestFile(t, test.want, gotXML)
+		rewriteGoldenFile(t, test.want, got)
 		return
 	}
 
-	wantFile, err := os.Open(test.want)
+	want, err := os.ReadFile(test.want)
 	if err != nil {
-		t.Fatalf("Error reading XML file: %v", err)
-	}
-	defer func() {
-		if err = wantFile.Close(); err != nil {
-			t.Fatalf("Failed to close XML file: %v", err)
-		}
-	}()
-
-	var wantXML XMLElement
-	if err = xml.NewDecoder(wantFile).Decode(&wantXML); err != nil {
-		t.Fatalf("Error decoding XML file: %v", err)
+		t.Errorf("Error reading golden file: %v", err)
 	}
 
-	if diff := cmp.Diff(wantXML, gotXML); diff != "" {
+	if diff := cmp.Diff(want, got); diff != "" {
 		t.Error(diff)
 	}
-}
-
-type TableTestInput struct {
-	hook string
-	form url.Values
-	want string
 }
 
 func TestGolden(t *testing.T) { //nolint:paralleltest, tparallel
@@ -164,14 +179,21 @@ func TestGolden(t *testing.T) { //nolint:paralleltest, tparallel
 		{
 			hook: "/voice/inbound",
 			form: url.Values{},
-			want: "testdata/voice/inbound-from-client.xml",
+			want: "testdata/voice/inbound-client.xml",
+			lang: "en",
 		},
 		{
 			hook: "/voice/inbound",
 			form: url.Values{
 				"From": []string{agentDID},
 			},
-			want: "testdata/voice/inbound-from-agent.xml",
+			want: "testdata/voice/inbound-agent.xml",
+			lang: "en",
+		},
+		{
+			hook: "/voice/accept-call",
+			form: url.Values{},
+			want: "testdata/voice/accept-call.xml",
 		},
 	}
 
