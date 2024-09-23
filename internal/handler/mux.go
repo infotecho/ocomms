@@ -1,11 +1,11 @@
-package app
+// Package handler implements the server's HTTP request handler
+package handler
 
 import (
 	"log/slog"
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
-	"github.com/infotecho/ocomms/internal/twihooks"
 )
 
 const (
@@ -20,13 +20,15 @@ const (
 	voicemailEnd          = "/voice/end-voicemail"
 )
 
-type muxFactory struct {
+// MuxFactory creates the application's HTTP mux.
+type MuxFactory struct {
 	Config       config.Config
 	Logger       *slog.Logger
-	VoiceHandler *twihooks.VoiceHandler
+	VoiceHandler *Voice
 }
 
-func (mf muxFactory) Mux() *http.ServeMux {
+// Mux creates the application's HTTP mux.
+func (mf MuxFactory) Mux() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc(voiceInbound, mf.VoiceHandler.Inbound(voiceDialOut, voiceConnectAgent))

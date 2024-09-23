@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
+	"github.com/infotecho/ocomms/internal/handler"
 	"github.com/infotecho/ocomms/internal/i18n"
 	"github.com/infotecho/ocomms/internal/twigen"
-	"github.com/infotecho/ocomms/internal/twihooks"
 )
 
 // Server returns the [http.Server] implementing the O-Comms API.
@@ -29,10 +29,10 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 	return ServerFactory{
 		Config: config,
 		Logger: logger,
-		MuxFactory: &muxFactory{
+		MuxFactory: &handler.MuxFactory{
 			Config: config,
 			Logger: logger,
-			VoiceHandler: &twihooks.VoiceHandler{
+			VoiceHandler: &handler.Voice{
 				Config: config,
 				Logger: logger,
 				Twigen: &twigen.Voice{

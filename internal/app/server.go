@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/infotecho/ocomms/internal/config"
+	"github.com/infotecho/ocomms/internal/handler"
 	"github.com/infotecho/ocomms/internal/log"
 )
 
@@ -12,7 +13,7 @@ import (
 type ServerFactory struct {
 	Config     config.Config
 	Logger     *slog.Logger
-	MuxFactory *muxFactory
+	MuxFactory *handler.MuxFactory
 }
 
 // Server returns an [http.Server] instance for O-Comms.
