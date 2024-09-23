@@ -17,11 +17,11 @@ import (
 var configFile []byte
 
 // Load reads app config from config.yaml and unmarshals it to a Config struct.
-func Load() (Config, error) {
+func Load(allowUndefinedEnvVariables bool) (Config, error) {
 	var errs []error
 	expanded := os.Expand(string(configFile), func(s string) string {
 		envVar := os.Getenv(s)
-		if envVar == "" {
+		if envVar == "" && !allowUndefinedEnvVariables {
 			errs = append(errs, fmt.Errorf("undefined environment variable %s", s))
 		}
 		return envVar

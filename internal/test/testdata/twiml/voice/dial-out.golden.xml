@@ -1,4 +1,4 @@
--- en --
+-- all --
 <Response>
 	<Dial record="record-from-answer" recordingStatusCallback="/voice/recording-status-callback">1234567890</Dial>
 </Response>

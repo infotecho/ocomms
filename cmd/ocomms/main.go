@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	conf, err := config.Load()
+	conf, err := config.Load(false)
 	logger := log.New(conf)
 
 	if err != nil {

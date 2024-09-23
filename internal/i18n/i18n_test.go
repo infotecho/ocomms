@@ -13,7 +13,7 @@ import (
 func Test_Message_en(t *testing.T) {
 	t.Parallel()
 
-	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{})
+	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{}) //nolint:exhaustruct
 	if err != nil {
 		t.Errorf("Failed to load message provider: %s", err)
 	}
@@ -31,7 +31,7 @@ func Test_Message_en(t *testing.T) {
 func Test_Message_fr(t *testing.T) {
 	t.Parallel()
 
-	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{})
+	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{}) //nolint:exhaustruct
 	if err != nil {
 		t.Errorf("Failed to load message provider: %s", err)
 	}
@@ -71,7 +71,7 @@ func Test_Message_invalidLang(t *testing.T) {
 func Test_Message_replacementExpected(t *testing.T) {
 	t.Parallel()
 
-	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{})
+	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{}) //nolint:exhaustruct
 	if err != nil {
 		t.Errorf("Failed to load message provider: %s", err)
 	}
@@ -89,7 +89,7 @@ func Test_Message_replacementExpected(t *testing.T) {
 func Test_MessageReplace(t *testing.T) {
 	t.Parallel()
 
-	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{})
+	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{}) //nolint:exhaustruct
 	if err != nil {
 		t.Errorf("Failed to load message provider: %s", err)
 	}
@@ -111,7 +111,7 @@ func Test_MessageReplace(t *testing.T) {
 func Test_MessageReplace_InvalidReplacement(t *testing.T) {
 	t.Parallel()
 
-	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{})
+	mp, err := i18n.NewMessageProvider(slog.Default(), config.Config{}) //nolint:exhaustruct
 	if err != nil {
 		t.Errorf("Failed to load message provider: %s", err)
 	}

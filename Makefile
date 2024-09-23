@@ -24,8 +24,8 @@ test:
 	go test ./...
 
 testupdate:
-	rm -rf ./internal/app/testdata
-	go test ./internal/app -update
+	rm -rf ./internal/test/**/*.golden.*
+	go test ./internal/test/ -update
 
 cover:
 	go test ./... -cover -coverprofile=coverage.out
