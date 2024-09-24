@@ -2,7 +2,7 @@
 package i18n
 
 import (
-	"errors"
+	"context"
 	"fmt"
 	"log/slog"
 	"regexp"
@@ -34,48 +34,40 @@ func NewMessageProvider(logger *slog.Logger, config config.Config) (*MessageProv
 
 // Message returns a localized message given lang and getter,
 // which identifies which property to retrieve on the Messages object.
-func (mp MessageProvider) Message(lang string, getter func(Messages) string) (string, error) {
-	return mp.MessageReplace(lang, getter, map[string]string{})
+func (mp MessageProvider) Message(ctx context.Context, lang string, getter func(Messages) string) string {
+	return mp.MessageReplace(ctx, lang, getter, map[string]string{})
 }
 
 // MessageReplace returns a localized message given lang, getter,
 // and replacements for templated values in the i18n string.
 func (mp MessageProvider) MessageReplace(
+	ctx context.Context,
 	lang string,
 	getter func(Messages) string,
 	replacements map[string]string,
-) (string, error) {
-	errs := []error{}
-
+) string {
 	messages, ok := mp.messages[lang]
 	if !ok {
 		defaultLang := mp.config.I18N.DefaultLang
-		err := fmt.Errorf("no messages exist for lang '%s'. Defaulting to lang '%s'", lang, defaultLang)
-		errs = append(errs, err)
 		messages = mp.messages[defaultLang]
+		mp.logger.ErrorContext(
+			ctx,
+			fmt.Sprintf("No messages exist for lang '%s'. Defaulting to lang '%s'", lang, defaultLang),
+		)
 	}
 
 	msg := getter(messages)
 
 	re := regexp.MustCompile(`\{[^\}]*\}`)
-
 	msg = re.ReplaceAllStringFunc(msg, func(sub string) string {
 		key := sub[1 : len(sub)-1]
-
 		val, ok := replacements[key]
 		if !ok {
-			errs = append(errs, fmt.Errorf("no replacement provided for '%s' in i18n message", key))
-
+			mp.logger.ErrorContext(ctx, fmt.Sprintf("No replacement provided for '%s' in i18n message", key))
 			return ""
 		}
-
 		return val
 	})
 
-	var err error
-	if len(errs) > 0 {
-		err = errors.Join(errs...)
-	}
-
-	return msg, err
+	return msg
 }

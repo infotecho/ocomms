@@ -28,32 +28,16 @@ func (v Voice) voice(ctx context.Context, verbs []twiml.Element) string {
 }
 
 func (v *Voice) say(ctx context.Context, lang string, getter func(m i18n.Messages) string) *twiml.VoiceSay {
-	msg, err := v.I18n.Message(lang, getter)
-	if err != nil {
-		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
-	}
-
-	voiceLang, ok := v.Config.Twilio.Languages[lang]
-	if !ok {
-		v.Logger.ErrorContext(ctx, fmt.Sprintf("No corresponding Twilio language found for language code '%s'", lang))
-	}
-
-	return &twiml.VoiceSay{
-		Language: voiceLang,
-		Message:  msg,
-	}
+	return v.sayTemplate(ctx, lang, getter, map[string]string{})
 }
 
 func (v *Voice) sayTemplate(
 	ctx context.Context,
 	lang string,
 	getter func(m i18n.Messages) string,
-	replaments map[string]string,
+	replacements map[string]string,
 ) *twiml.VoiceSay {
-	msg, err := v.I18n.MessageReplace(lang, getter, replaments)
-	if err != nil {
-		v.Logger.ErrorContext(ctx, "Error loading i18n message", "err", err)
-	}
+	msg := v.I18n.MessageReplace(ctx, lang, getter, replacements)
 
 	voiceLang, ok := v.Config.Twilio.Languages[lang]
 	if !ok {
