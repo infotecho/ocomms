@@ -4,7 +4,11 @@ import (
 	"flag"
 )
 
+//nolint:gochecknoglobals
+var loggingFormat = flag.String("logging.format", "", "Logging format (json or text)")
+
 func applyCommandLineFlags(config *Config) {
-	flag.StringVar(&config.Logging.Format, "logging.format", config.Logging.Format, "Logging format (json or text)")
-	flag.Parse()
+	if *loggingFormat != "" {
+		config.Logging.Format = *loggingFormat
+	}
 }

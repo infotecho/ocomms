@@ -13,10 +13,21 @@ logging:
 i18n:
   defaultLang: en
 
+mail:
+  from:
+    address: ocomms@infotechottawa.ca
+    name: O-Comms
+  to:
+    address: caleb@infotechottawa.ca
+    name: Caleb St-Denis
+  sendgrid:
+    apiKey: ${SENDGRID_API_KEY}
+
 twilio:
   agentDIDs:
     - "+16138160938"
   auth:
+    accountSID: AC9dd9e2eaf471a273968b3f1a18b637cc
     keySID: ${TWILIO_API_KEY_SID}
     keySecret: ${TWILIO_API_KEY_SECRET}
   recordInboundCalls: true

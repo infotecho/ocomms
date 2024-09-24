@@ -1,23 +1,33 @@
 package handler
 
 import (
+	"context"
 	"log/slog"
 	"net/http"
 	"slices"
 
 	"github.com/infotecho/ocomms/internal/config"
 	"github.com/infotecho/ocomms/internal/twigen"
+	"github.com/infotecho/ocomms/internal/twilio"
 )
 
 const (
-	keyRecordVoicemail = "9"
+	callStatusCompleted = "completed"
+	keyRecordVoicemail  = "9"
 )
+
+type emailer interface {
+	MissedCall(ctx context.Context, lang string, from string)
+	Voicemail(ctx context.Context, lang string, from string, recordingSID string)
+}
 
 // Voice implements handlers for Twilio Programmable Voice hooks.
 type Voice struct {
-	Config config.Config
-	Logger *slog.Logger
-	Twigen *twigen.Voice
+	Config  config.Config
+	Emailer emailer
+	Logger  *slog.Logger
+	Twigen  *twigen.Voice
+	Twilio  *twilio.API
 }
 
 func (v Voice) handler(hookHandler func(*http.Request) string) http.HandlerFunc {
@@ -63,19 +73,18 @@ func (v Voice) Inbound(actionDialOut string, actionConnectAgent string) http.Han
 }
 
 // DialOut dials out from the company to a gathered phone number.
-func (v Voice) DialOut(callbackRecordingStatus string) http.HandlerFunc {
+func (v Voice) DialOut() http.HandlerFunc {
 	return v.handler(func(r *http.Request) string {
 		v.parseForm(r)
 
 		digits := r.Form.Get("Digits")
 
-		return v.Twigen.DialOut(r.Context(), callbackRecordingStatus, digits)
+		return v.Twigen.DialOut(r.Context(), digits)
 	})
 }
 
 // ConnectAgent connects an incoming caller to an agent.
 func (v Voice) ConnectAgent(
-	callbackRecordingStatus string,
 	actionConnectAgent string,
 	actionAcceptCall string,
 	actionEndCall string,
@@ -88,9 +97,9 @@ func (v Voice) ConnectAgent(
 
 		switch digits {
 		case "1":
-			return v.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, callerID, "en")
+			return v.Twigen.DialAgent(r.Context(), actionAcceptCall, actionEndCall, callerID, "en")
 		case "2":
-			return v.Twigen.DialAgent(r.Context(), callbackRecordingStatus, actionAcceptCall, actionEndCall, callerID, "fr")
+			return v.Twigen.DialAgent(r.Context(), actionAcceptCall, actionEndCall, callerID, "fr")
 		default:
 			return v.Twigen.GatherLanguage(r.Context(), actionConnectAgent, false)
 		}
@@ -125,9 +134,9 @@ func (v Voice) EndCall(actionStartRecording string) http.HandlerFunc {
 		case callStatus == "busy",
 			callStatus == "no-answer",
 			// indicates call went to agent's voicemail - no key pressed to accept call
-			callStatus == "completed" && callDuration == "":
+			callStatus == callStatusCompleted && callDuration == "":
 			return v.Twigen.GatherVoicemailStart(r.Context(), actionStartRecording, keyRecordVoicemail, v.lang(r))
-		case callStatus == "completed":
+		case callStatus == callStatusCompleted:
 			return v.Twigen.Noop(r.Context())
 		default:
 			v.Logger.ErrorContext(r.Context(), "Unexpected DialCallStatus: "+callStatus)
@@ -138,7 +147,6 @@ func (v Voice) EndCall(actionStartRecording string) http.HandlerFunc {
 
 // StartVoicemail handles a key press after a caller was invited to press 9 to leave a message.
 func (v Voice) StartVoicemail(
-	callbackRecordingStatus string,
 	actionStartVoicemail string,
 	actionEndVoicemail string,
 ) http.HandlerFunc {
@@ -153,7 +161,6 @@ func (v Voice) StartVoicemail(
 
 		return v.Twigen.RecordVoicemail(
 			r.Context(),
-			callbackRecordingStatus,
 			actionEndVoicemail,
 			keyRecordVoicemail,
 			v.lang(r),
@@ -164,7 +171,7 @@ func (v Voice) StartVoicemail(
 
 // EndVoicemail handles the end of a voicemail recording
 // either due to a keypress (rerecord) or caller hangup (end recording).
-func (v Voice) EndVoicemail(callbackRecordingStatus string, actionEndVoicemail string) http.HandlerFunc {
+func (v Voice) EndVoicemail(actionEndVoicemail string) http.HandlerFunc {
 	return v.handler(func(r *http.Request) string {
 		v.parseForm(r)
 
@@ -176,11 +183,37 @@ func (v Voice) EndVoicemail(callbackRecordingStatus string, actionEndVoicemail s
 
 		return v.Twigen.RecordVoicemail(
 			r.Context(),
-			callbackRecordingStatus,
 			actionEndVoicemail,
 			keyRecordVoicemail,
 			v.lang(r),
 			true,
 		)
+	})
+}
+
+// StatusCallback handles call status changes.
+func (v Voice) StatusCallback() http.HandlerFunc {
+	return v.handler(func(r *http.Request) string {
+		v.parseForm(r)
+
+		direction := r.Form.Get("Direction")
+		from := r.Form.Get("From")
+		callSID := r.Form.Get("CallSid")
+		callStatus := r.Form.Get("CallStatus")
+
+		if direction != "inbound" || callStatus != callStatusCompleted {
+			return v.Twigen.Noop(r.Context())
+		}
+
+		metadata := v.Twilio.GetCallMetadata(r.Context(), callSID)
+
+		switch {
+		case metadata.VoicemailRecordingID != "":
+			v.Emailer.Voicemail(r.Context(), metadata.Lang, from, metadata.VoicemailRecordingID)
+		case !metadata.CallConnected && metadata.Lang != "":
+			v.Emailer.MissedCall(r.Context(), metadata.Lang, from)
+		}
+
+		return v.Twigen.Noop(r.Context())
 	})
 }

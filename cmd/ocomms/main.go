@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 
 	"github.com/infotecho/ocomms/internal/app"
@@ -10,6 +11,8 @@ import (
 )
 
 func main() {
+	flag.Parse()
+
 	conf, err := config.Load(false)
 	logger := log.New(conf)
 

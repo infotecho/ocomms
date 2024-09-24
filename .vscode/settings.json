@@ -6,9 +6,12 @@
   "[terraform]": {
     "editor.defaultFormatter": "hashicorp.terraform"
   },
+  "gopls": {
+    "build.buildFlags": ["-tags=test,tools"]
+  },
   "editor.formatOnSave": true,
   "files.trimFinalNewlines": true,
-  "go.buildTags": "tools",
+  "go.buildTags": "test,tools",
   "go.lintTool": "golangci-lint",
   "yaml.schemas": {
     "internal/config/schema.json": "internal/config/config.yaml"

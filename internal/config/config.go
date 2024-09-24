@@ -29,11 +29,26 @@ type Config struct {
 		DefaultLang string `json:"defaultLang"`
 	} `json:"i18n"`
 
+	Mail struct {
+		From struct {
+			Name    string `json:"name"`
+			Address string `json:"address"`
+		} `json:"from"`
+		To struct {
+			Name    string `json:"name"`
+			Address string `json:"address"`
+		} `json:"to"`
+		SendGrid struct {
+			APIKey string `json:"apiKey"`
+		} `json:"sendgrid"`
+	} `json:"mail"`
+
 	Twilio struct {
 		AgentDIDs []string `json:"agentDIDs"`
 		Auth      struct {
-			KeySID    string `json:"keySID"`
-			KeySecret string `json:"keySecret"`
+			AccountSID string `json:"accountSID"`
+			KeySID     string `json:"keySID"`
+			KeySecret  string `json:"keySecret"`
 		} `json:"auth"`
 		Languages           map[string]string `json:"languages"`
 		RecordInboundCalls  bool              `json:"recordInboundCalls"`

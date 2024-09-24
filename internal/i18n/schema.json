@@ -5,6 +5,38 @@
   "$defs": {
     "Messages": {
       "properties": {
+        "email": {
+          "properties": {
+            "missedCallSubject": {
+              "type": "string"
+            },
+            "missedCallContent": {
+              "type": "string"
+            },
+            "nameFrom": {
+              "type": "string"
+            },
+            "nameTo": {
+              "type": "string"
+            },
+            "voicemailSubject": {
+              "type": "string"
+            },
+            "voicemailContent": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "missedCallSubject",
+            "missedCallContent",
+            "nameFrom",
+            "nameTo",
+            "voicemailSubject",
+            "voicemailContent"
+          ]
+        },
         "voice": {
           "properties": {
             "acceptCall": {
@@ -53,6 +85,7 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
+        "email",
         "voice"
       ]
     }

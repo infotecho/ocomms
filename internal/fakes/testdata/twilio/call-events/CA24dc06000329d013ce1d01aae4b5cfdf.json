@@ -1,0 +1,99 @@
+{
+	"first_page_uri": "/2010-04-01/Accounts/AC9dd9e2eaf471a273968b3f1a18b637cc/Calls/CA24dc06000329d013ce1d01aae4b5cfdf/Events.json?PageSize=50&Page=0",
+	"end": 1,
+	"previous_page_uri": null,
+	"uri": "/2010-04-01/Accounts/AC9dd9e2eaf471a273968b3f1a18b637cc/Calls/CA24dc06000329d013ce1d01aae4b5cfdf/Events.json?PageSize=50&Page=0",
+	"page_size": 50,
+	"page": 0,
+	"start": 0,
+	"next_page_uri": null,
+	"events": [
+		{
+			"request": {
+				"url": "https://ocomms-tm3isbyn7a-nn.a.run.app/voice/inbound",
+				"method": "POST",
+				"parameters": {
+					"call_status": "ringing",
+					"caller_zip": "",
+					"caller_country": "CA",
+					"caller_city": "OTTAWA",
+					"from": "+16138052869",
+					"called_country": "CA",
+					"to_city": "KINGSTON",
+					"to": "+16137775650",
+					"to_country": "CA",
+					"stir_verstat": "TN-Validation-Passed-C",
+					"from_city": "OTTAWA",
+					"call_token": "%7B%22parentCallInfoToken%22%3A%22eyJhbGciOiJFUzI1NiJ9.eyJjYWxsU2lkIjoiQ0EyNGRjMDYwMDAzMjlkMDEzY2UxZDAxYWFlNGI1Y2ZkZiIsImZyb20iOiIrMTYxMzgwNTI4NjkiLCJ0byI6IisxNjEzNzc3NTY1MCIsImlhdCI6IjE3MjcyMTQzMDgifQ._pixzUpJs6rMAtaBMO1jC5-a5n1kdzitSf5PI0CALsANW_56m7BYJ-f0sJUXaQOXSmfCY50ueUBlqZelm3VnTw%22%2C%22identityHeaderTokens%22%3A%5B%5D%7D",
+					"api_version": "2010-04-01",
+					"direction": "inbound",
+					"to_zip": "",
+					"from_zip": "",
+					"from_country": "CA",
+					"called_zip": "",
+					"caller_state": "ON",
+					"from_state": "ON",
+					"to_state": "ON",
+					"called_state": "ON",
+					"caller": "+16138052869",
+					"account_sid": "AC9dd9e2eaf471a273968b3f1a18b637cc",
+					"called_city": "KINGSTON",
+					"call_sid": "CA24dc06000329d013ce1d01aae4b5cfdf",
+					"called": "+16137775650"
+				}
+			},
+			"response": {
+				"date_created": "Tue, 24 Sep 2024 21:45:08 +0000",
+				"request_duration": 550,
+				"response_code": 200,
+				"content_type": "application/xml",
+				"response_body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><Response><Gather timeout=\"10\" numDigits=\"1\" action=\"/voice/connect-agent\"><Say language=\"en-US\">Welcome to Infotech Ottawa.</Say><Say language=\"en-US\">For service in English, press 1.</Say><Say language=\"fr-CA\">Pour le service en français, appuyer sur le 2.</Say></Gather><Gather timeout=\"10\" action=\"/voice/connect-agent\" numDigits=\"1\"><Say language=\"en-US\">For service in English, press 1.</Say><Say language=\"fr-CA\">Pour le service en français, appuyer sur le 2.</Say></Gather></Response>"
+			}
+		},
+		{
+			"request": {
+				"url": "https://ocomms-tm3isbyn7a-nn.a.run.app/voice",
+				"method": "POST",
+				"parameters": {
+					"call_status": "completed",
+					"caller_zip": "",
+					"caller_country": "CA",
+					"caller_city": "OTTAWA",
+					"duration": "1",
+					"from": "+16138052869",
+					"called_country": "CA",
+					"to_city": "KINGSTON",
+					"to": "+16137775650",
+					"to_country": "CA",
+					"from_city": "OTTAWA",
+					"api_version": "2010-04-01",
+					"direction": "inbound",
+					"to_zip": "",
+					"timestamp": "Tue, 24 Sep 2024 21:45:12 +0000",
+					"from_zip": "",
+					"from_country": "CA",
+					"called_zip": "",
+					"caller_state": "ON",
+					"from_state": "ON",
+					"to_state": "ON",
+					"called_state": "ON",
+					"call_duration": "3",
+					"caller": "+16138052869",
+					"callback_source": "call-progress-events",
+					"account_sid": "AC9dd9e2eaf471a273968b3f1a18b637cc",
+					"called_city": "KINGSTON",
+					"call_sid": "CA24dc06000329d013ce1d01aae4b5cfdf",
+					"called": "+16137775650",
+					"sequence_number": "0"
+				}
+			},
+			"response": {
+				"date_created": "Tue, 24 Sep 2024 21:45:12 +0000",
+				"request_duration": 47,
+				"response_code": 404,
+				"content_type": "text/plain; charset=utf-8",
+				"response_body": "404 page not found\n"
+			}
+		}
+	]
+}

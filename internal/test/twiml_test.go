@@ -3,7 +3,6 @@ package test_test
 import (
 	"context"
 	"encoding/xml"
-	"flag"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -25,8 +24,6 @@ import (
 const (
 	agentDID = "+16138160938"
 )
-
-var update = flag.Bool("update", false, "rewrite testdata golden files")
 
 type XMLElement struct {
 	XMLName  xml.Name     `xml:""`
@@ -53,7 +50,7 @@ func (e *XMLElement) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error 
 	return nil
 }
 
-func setup(t *testing.T) string {
+func setupServer(t *testing.T) string {
 	t.Helper()
 
 	config, err := config.Load(true)
@@ -144,7 +141,7 @@ func updateGolden(t *testing.T, path string, got []byte) {
 	}
 }
 
-var goldenTests = []struct {
+var goldenTwimlTests = []struct {
 	name   string
 	path   string
 	form   url.Values
@@ -288,16 +285,23 @@ var goldenTests = []struct {
 		},
 		golden: "noop",
 	},
+
+	{
+		name:   "status-callback",
+		path:   "/voice/status-callback",
+		form:   url.Values{},
+		golden: "noop",
+	},
 }
 
-func TestGolden(t *testing.T) {
+func TestGoldenTwiml(t *testing.T) {
 	t.Parallel()
 
-	serverURL := setup(t)
+	serverURL := setupServer(t)
 
 	langs := []string{"en", "fr"}
 
-	for _, test := range goldenTests {
+	for _, test := range goldenTwimlTests {
 		pathRoot := strings.Split(test.path, "/")[1]
 		name := path.Join(pathRoot, test.name)
 		t.Run(name, func(t *testing.T) {

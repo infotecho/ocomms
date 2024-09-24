@@ -1,4 +1,18 @@
 # yaml-language-server: $schema=../schema.json
+email:
+  missedCallSubject: Missed call from {phoneNumber}
+  missedCallContent: |
+    A client tried to call InfoTech Ottawa but did not leave a voicemail.
+
+    Their phone number is: {phoneNumber}
+  nameFrom: O-Comms
+  nameTo: Caleb St-Denis
+  voicemailSubject: Voicemail from {phoneNumber}
+  voicemailContent: |
+    A caller to InfoTech Ottawa has left a voicemail.
+
+    Phone number: {phoneNumber}
+    Link to voicemail: https://ocomms.infotechottawa.ca/recordings/{recordingSID}
 voice:
   acceptCall: Press any key to accept the call.
   confirmConnected: Connected.

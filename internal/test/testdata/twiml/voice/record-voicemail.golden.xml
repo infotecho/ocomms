@@ -1,10 +1,10 @@
 -- en --
 <Response>
 	<Say language="en-US">Record your message after the tone.</Say>
-	<Record action="/voice/end-voicemail?lang=en" finishOnKey="9" recordingStatusCallback="/voice/recording-status-callback" timeout="0"></Record>
+	<Record action="/voice/end-voicemail?lang=en" finishOnKey="9" timeout="0"></Record>
 </Response>
 -- fr --
 <Response>
 	<Say language="fr-CA">Enregistrez votre message après le bip.</Say>
-	<Record action="/voice/end-voicemail?lang=fr" finishOnKey="9" recordingStatusCallback="/voice/recording-status-callback" timeout="0"></Record>
+	<Record action="/voice/end-voicemail?lang=fr" finishOnKey="9" timeout="0"></Record>
 </Response>

@@ -4,10 +4,10 @@ fmt:
 	go fmt ./...
 
 lint:
-	golangci-lint run
+	golangci-lint run --build-tags test,tools
 
 fix:
-	golangci-lint run --fix
+	golangci-lint run --build-tags test,tools --fix
 
 generate:
 	go generate ./...
@@ -21,14 +21,14 @@ vulncheck:
 	govulncheck ./...
 
 test:
-	go test ./...
+	go test -tags=test ./...
 
 testupdate:
 	rm -rf ./internal/test/**/*.golden.*
-	go test ./internal/test/ -update
+	go test ./internal/test/ -tags=test -update
 
 cover:
-	go test ./... -cover -coverprofile=coverage.out
+	go test ./... -cover -coverprofile=coverage.out -tags=test
 	go tool cover -html=coverage.out
 
 check: generate schemavalidate fmt lint vulncheck test

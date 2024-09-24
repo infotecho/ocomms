@@ -13,6 +13,11 @@ spec:
           env:
             - name: GOOGLE_CLOUD_PROJECT
               value: ocomms
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: "1"
+                  name: sendgrid-api-key
             - name: TWILIO_API_KEY_SID
               value: SK5249dbf7bdd9d365ae81ba851195ab1f
             - name: TWILIO_API_KEY_SECRET

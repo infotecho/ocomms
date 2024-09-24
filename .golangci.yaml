@@ -1,5 +1,6 @@
 run:
   build-tags:
+    - test
     - tools
 
 linters:

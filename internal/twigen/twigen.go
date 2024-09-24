@@ -1,4 +1,4 @@
-// Package twigen generates TwiML.
+// Package twigen contains functions for generating TwiML (Twilio markup)
 package twigen
 
 import (
@@ -27,11 +27,11 @@ func (v Voice) voice(ctx context.Context, verbs []twiml.Element) string {
 	return res
 }
 
-func (v *Voice) say(ctx context.Context, lang string, getter func(m i18n.Messages) string) *twiml.VoiceSay {
+func (v Voice) say(ctx context.Context, lang string, getter func(m i18n.Messages) string) *twiml.VoiceSay {
 	return v.sayTemplate(ctx, lang, getter, map[string]string{})
 }
 
-func (v *Voice) sayTemplate(
+func (v Voice) sayTemplate(
 	ctx context.Context,
 	lang string,
 	getter func(m i18n.Messages) string,
@@ -70,13 +70,12 @@ func (v Voice) GatherOutboundNumber(ctx context.Context, actionDialOut string) s
 }
 
 // DialOut generates TwiML to dial out as the company.
-func (v Voice) DialOut(ctx context.Context, callbackRecordingStatus string, number string) string {
+func (v Voice) DialOut(ctx context.Context, number string) string {
 	dial := &twiml.VoiceDial{
 		Number: number,
 	}
 	if v.Config.Twilio.RecordOutboundCalls {
 		dial.Record = "record-from-answer"
-		dial.RecordingStatusCallback = callbackRecordingStatus
 	}
 	return v.voice(ctx, []twiml.Element{dial})
 }
@@ -115,7 +114,6 @@ func (v Voice) GatherLanguage(ctx context.Context, actionConnectAgent string, in
 // DialAgent generates TwiML to connect a caller to an agent.
 func (v Voice) DialAgent(
 	ctx context.Context,
-	callbackRecordingStatus string,
 	actionAcceptCall string,
 	actionEndCall string,
 	callerID string,
@@ -140,7 +138,6 @@ func (v Voice) DialAgent(
 	}
 	if v.Config.Twilio.RecordInboundCalls {
 		dialAgents.Record = "record-from-answer"
-		dialAgents.RecordingStatusCallback = callbackRecordingStatus
 	}
 
 	return v.voice(ctx, []twiml.Element{sayHold, dialAgents})
@@ -200,7 +197,6 @@ func (v Voice) GatherVoicemailStart(
 // RecordVoicemail generates TwiML instructing Twilio to record a caller's voicemail.
 func (v Voice) RecordVoicemail(
 	ctx context.Context,
-	callbackRecordingStatus string,
 	actionEndVoicemail string,
 	recordKey string,
 	lang string,
@@ -213,10 +209,9 @@ func (v Voice) RecordVoicemail(
 		say = v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.RecordAfterTone })
 	}
 	record := &twiml.VoiceRecord{
-		Action:                  actionEndVoicemail + "?lang=" + lang,
-		FinishOnKey:             recordKey,
-		RecordingStatusCallback: callbackRecordingStatus,
-		Timeout:                 "0",
+		Action:      actionEndVoicemail + "?lang=" + lang,
+		FinishOnKey: recordKey,
+		Timeout:     "0",
 	}
 	return v.voice(ctx, []twiml.Element{say, record})
 }
