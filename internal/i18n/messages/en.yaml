@@ -12,7 +12,7 @@ email:
     A caller to InfoTech Ottawa has left a voicemail.
 
     Phone number: {phoneNumber}
-    Link to voicemail: https://ocomms.infotechottawa.ca/recordings/{recordingSID}
+    Link to voicemail: {voicemailURL}
 voice:
   acceptCall: Press any key to accept the call.
   confirmConnected: Connected.

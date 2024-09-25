@@ -68,7 +68,7 @@ func (m *SendGridMailer) Voicemail(ctx context.Context, lang string, fromDID str
 		func(m i18n.Messages) string { return m.Email.VoicemailContent },
 		map[string]string{
 			"phoneNumber":  fromDID,
-			"recordingSID": recordingSID,
+			"voicemailURL": "https://ocomms-539601029037.northamerica-northeast1.run.app/recordings/" + recordingSID,
 		},
 	)
 

@@ -12,7 +12,7 @@ email:
     Un client a laissé un message dans la boîte vocale de l'Infothèque.
 
     Numéro de téléphone: {phoneNumber}
-    Lien au message: https://ocomms.infotechottawa.ca/recordings/{recordingSID}
+    Lien au message: {voicemailURL}
 voice:
   acceptCall: Appuyez sur n'importe quelle touche pour accepter l'appel.
   confirmConnected: Connecté.
