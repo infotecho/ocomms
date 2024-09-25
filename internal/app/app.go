@@ -40,10 +40,10 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 		Config: config,
 		Logger: logger,
 		MuxFactory: &handler.MuxFactory{
-			Recordings: &handler.Recordings{
+			Recordings: &handler.RecordingsHandler{
 				Logger: logger,
 			},
-			Voice: &handler.Voice{
+			Voice: &handler.VoiceHandler{
 				Config: config,
 				Emailer: &mail.SendGridMailer{
 					Config:         config,

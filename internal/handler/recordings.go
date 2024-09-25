@@ -5,9 +5,9 @@ import (
 	"net/http"
 )
 
-// Recordings handles routes under /recordings.
-type Recordings struct {
+// RecordingsHandler handles routes under /recordings.
+type RecordingsHandler struct {
 	Logger *slog.Logger
 }
 
-func (rec Recordings) getRecording(_ http.ResponseWriter, _ *http.Request) {}
+func (h RecordingsHandler) getRecording(_ http.ResponseWriter, _ *http.Request) {}

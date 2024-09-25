@@ -23,7 +23,7 @@ const (
 	phoneNumber = "+17052223434" // An arbitrary DID
 )
 
-func setup(t *testing.T, sgc *fakes.SendGridClient) *handler.Voice {
+func setup(t *testing.T, sgc *fakes.SendGridClient) *handler.VoiceHandler {
 	t.Helper()
 
 	logger := slog.Default()
@@ -43,7 +43,7 @@ func setup(t *testing.T, sgc *fakes.SendGridClient) *handler.Voice {
 		t.Fatalf("Failed to initialize SUT dependency: %v", err)
 	}
 
-	return &handler.Voice{
+	return &handler.VoiceHandler{
 		Config: config,
 		Emailer: &mail.SendGridMailer{
 			Config:         config,

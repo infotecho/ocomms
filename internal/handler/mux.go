@@ -17,8 +17,8 @@ const (
 
 // MuxFactory is responsible for creating the app's HTTP request multiplexer.
 type MuxFactory struct {
-	Recordings *Recordings
-	Voice      *Voice
+	Recordings *RecordingsHandler
+	Voice      *VoiceHandler
 }
 
 // Mux creates the app's HTTP request multiplexer.
