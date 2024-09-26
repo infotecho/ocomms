@@ -24,8 +24,8 @@ test:
 	go test -tags=test ./...
 
 testupdate:
-	rm -rf ./internal/test/**/*.golden.*
-	go test ./internal/test/ -tags=test -update
+	find . -name "*.golden.*" -exec rm -f {} +
+	go test ./internal/handler/ -tags=test -update
 
 cover:
 	go test ./... -cover -coverprofile=coverage.out -tags=test
