@@ -5,13 +5,24 @@ package i18n
 // Messages defines all the i18n strings to be localized.
 type Messages struct {
 	Email struct {
-		MissedCallSubject string `json:"missedCallSubject"`
-		MissedCallContent string `json:"missedCallContent"`
-		NameFrom          string `json:"nameFrom"`
-		NameTo            string `json:"nameTo"`
-		VoicemailSubject  string `json:"voicemailSubject"`
-		VoicemailContent  string `json:"voicemailContent"`
+		MissedCall struct {
+			Subject string `json:"subject"`
+			Content string `json:"content"`
+		} `json:"missedCall"`
+		NameFrom    string `json:"nameFrom"`
+		NameTo      string `json:"nameTo"`
+		TextMessage struct {
+			Subject string `json:"subject"`
+			Content string `json:"content"`
+		} `json:"textMessage"`
+		Voicemail struct {
+			Subject string `json:"subject"`
+			Content string `json:"content"`
+		} `json:"voicemail"`
 	} `json:"email"`
+	Messaging struct {
+		Response string `json:"response"`
+	} `json:"messaging"`
 	Voice struct {
 		AcceptCall       string `json:"acceptCall"`
 		ConfirmConnected string `json:"confirmConnected"`

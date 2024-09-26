@@ -80,19 +80,27 @@ func setupMux(t *testing.T, sgFake *fakes.SendGridClient) *http.ServeMux {
 		t.Fatalf("Failed to instantiate Twilio client test double: %v", err)
 	}
 
+	mailer := &mail.SendGridMailer{
+		Config:         config,
+		I18n:           i18n,
+		Logger:         logger,
+		SendGridClient: sgFake,
+	}
+
 	muxFactory := &handler.MuxFactory{
 		Recordings: &handler.RecordingsHandler{
 			Logger: logger,
 		},
-		Voice: &handler.VoiceHandler{
+		SMS: &handler.SMSHandler{
 			Config: config,
-			Emailer: &mail.SendGridMailer{
-				Config:         config,
-				I18n:           i18n,
-				Logger:         logger,
-				SendGridClient: sgFake,
-			},
+			I18n:   i18n,
 			Logger: logger,
+			Mailer: mailer,
+		},
+		Voice: &handler.VoiceHandler{
+			Config:  config,
+			Emailer: mailer,
+			Logger:  logger,
 			Twigen: &twigen.Voice{
 				Config: config,
 				I18n:   i18n,
@@ -326,6 +334,17 @@ var goldenTwimlTests = []struct {
 		form:   url.Values{},
 		golden: "noop",
 	},
+
+	{
+		name: "sms-reply",
+		path: "/sms/inbound",
+		form: url.Values{
+			"Body": []string{"Hello world"},
+			"From": []string{"1234567890"},
+			"To":   []string{"6137775650"},
+		},
+		lang: "all",
+	},
 }
 
 func TestGoldenTwiml(t *testing.T) {
@@ -436,6 +455,17 @@ var goldenEmailTests = []struct {
 			"CallStatus": []string{"completed"},
 			"Direction":  []string{"inbound"},
 			"From":       []string{clientDID},
+		},
+		emailSent: true,
+	},
+
+	{
+		name: "sms-reply",
+		path: "/sms/inbound",
+		form: url.Values{
+			"From": []string{clientDID},
+			"To":   []string{companyDID},
+			"Body": []string{"Hello world"},
 		},
 		emailSent: true,
 	},

@@ -18,12 +18,15 @@ const (
 // MuxFactory is responsible for creating the app's HTTP request multiplexer.
 type MuxFactory struct {
 	Recordings *RecordingsHandler
+	SMS        *SMSHandler
 	Voice      *VoiceHandler
 }
 
 // Mux creates the app's HTTP request multiplexer.
 func (mf MuxFactory) Mux() *http.ServeMux {
 	mux := http.NewServeMux()
+
+	mux.Handle("/sms/inbound", mf.SMS.Inbound())
 
 	mux.HandleFunc("/voice/inbound", mf.Voice.Inbound(voiceDialOut, voiceConnectAgent))
 	mux.HandleFunc(voiceDialOut, mf.Voice.DialOut())

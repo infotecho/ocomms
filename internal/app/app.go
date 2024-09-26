@@ -36,6 +36,13 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 		Password:   config.Twilio.Auth.KeySecret,
 	})
 
+	mailer := &mail.SendGridMailer{
+		Config:         config,
+		I18n:           i18n,
+		Logger:         logger,
+		SendGridClient: sendgrid.NewSendClient(config.Mail.SendGrid.APIKey),
+	}
+
 	return ServerFactory{
 		Config: config,
 		Logger: logger,
@@ -43,15 +50,16 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 			Recordings: &handler.RecordingsHandler{
 				Logger: logger,
 			},
-			Voice: &handler.VoiceHandler{
+			SMS: &handler.SMSHandler{
 				Config: config,
-				Emailer: &mail.SendGridMailer{
-					Config:         config,
-					I18n:           i18n,
-					Logger:         logger,
-					SendGridClient: sendgrid.NewSendClient(config.Mail.SendGrid.APIKey),
-				},
+				I18n:   i18n,
 				Logger: logger,
+				Mailer: mailer,
+			},
+			Voice: &handler.VoiceHandler{
+				Config:  config,
+				Emailer: mailer,
+				Logger:  logger,
 				Twigen: &twigen.Voice{
 					Config: config,
 					I18n:   i18n,

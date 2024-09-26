@@ -1,18 +1,35 @@
 # yaml-language-server: $schema=../schema.json
 email:
-  missedCallSubject: Appel manqué de {phoneNumber}
-  missedCallContent: |
-    Un client a tenté d'appeler l'Infothèque d'Ottawa mais il n'a pas laissé de message.
-
-    Leur numéro de téléphone est: {phoneNumber}
   nameFrom: O-Comms
   nameTo: Caleb St-Denis
-  voicemailSubject: Message vocal reçu de {phoneNumber}
-  voicemailContent: |
-    Un client a laissé un message dans la boîte vocale de l'Infothèque.
+  missedCall:
+    subject: Appel manqué de {phoneNumber}
+    content: |
+      Un client a tenté d'appeler l'Infothèque d'Ottawa mais il n'a pas laissé de message.
 
-    Numéro de téléphone: {phoneNumber}
-    Lien au message: {voicemailURL}
+      Leur numéro de téléphone est: {phoneNumber}
+  textMessage:
+    subject: Message text reçu de {phoneNumber}
+    content: |
+      Un client a tenté de texter l'Infothèque d'Ottawa avec le message suivant:
+
+      {messageBody}
+  voicemail:
+    subject: Message vocal reçu de {phoneNumber}
+    content: |
+      Un client a laissé un message dans la boîte vocale de l'Infothèque.
+
+      Numéro de téléphone: {phoneNumber}
+      Lien au message: {voicemailURL}
+
+messaging:
+  response: >
+    Vous avez rejoint l'Infothèque Ottawa.
+    Malheureusement, nous ne sommes pas en mesure d'accepter les messages texte pour le moment.
+    Prière de nous appeler au (613) 777-5650.
+    Vous pouvez aussi nous contacter par courriel à contact@infothequeottawa.ca.
+    Merci!
+
 voice:
   acceptCall: Appuyez sur n'importe quelle touche pour accepter l'appel.
   confirmConnected: Connecté.

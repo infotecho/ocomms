@@ -21,7 +21,7 @@ type emailer interface {
 	Voicemail(ctx context.Context, lang string, from string, recordingSID string)
 }
 
-// VoiceHandler implements handlers for Twilio Programmable VoiceHandler hooks.
+// VoiceHandler implements handlers for Twilio Programmable Voice hooks.
 type VoiceHandler struct {
 	Config  config.Config
 	Emailer emailer
@@ -32,21 +32,21 @@ type VoiceHandler struct {
 
 func (h VoiceHandler) handler(hookHandler func(*http.Request) string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		err := r.ParseForm()
+		if err != nil {
+			h.Logger.ErrorContext(r.Context(), "Failed to parse Twilio hook HTML form", "err", err)
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/xml")
 
 		twiml := hookHandler(r)
 
-		_, err := w.Write([]byte(twiml))
+		_, err = w.Write([]byte(twiml))
 		if err != nil {
 			h.Logger.ErrorContext(r.Context(), "Failed to write response", "err", err)
 		}
-	}
-}
-
-func (h VoiceHandler) parseForm(r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		h.Logger.ErrorContext(r.Context(), "Failed to parse Twilio hook HTML form", "err", err)
 	}
 }
 
@@ -62,8 +62,6 @@ func (h VoiceHandler) lang(r *http.Request) string {
 // Inbound handles inbound calls.
 func (h VoiceHandler) Inbound(actionDialOut string, actionConnectAgent string) http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		if slices.Contains(h.Config.Twilio.AgentDIDs, r.Form.Get("From")) {
 			return h.Twigen.GatherOutboundNumber(r.Context(), actionDialOut)
 		}
@@ -75,8 +73,6 @@ func (h VoiceHandler) Inbound(actionDialOut string, actionConnectAgent string) h
 // DialOut dials out from the company to a gathered phone number.
 func (h VoiceHandler) DialOut() http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		digits := r.Form.Get("Digits")
 
 		return h.Twigen.DialOut(r.Context(), digits)
@@ -90,8 +86,6 @@ func (h VoiceHandler) ConnectAgent(
 	actionEndCall string,
 ) http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		callerID := r.Form.Get("To")
 		digits := r.Form.Get("Digits")
 
@@ -125,8 +119,6 @@ func (h VoiceHandler) ConfirmConnected() http.HandlerFunc {
 // or unsuccessful (busy tone or call goes to agent voicemail).
 func (h VoiceHandler) EndCall(actionStartRecording string) http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		callStatus := r.Form.Get("DialCallStatus")
 		callDuration := r.Form.Get("DialCallDuration")
 
@@ -151,8 +143,6 @@ func (h VoiceHandler) StartVoicemail(
 	actionEndVoicemail string,
 ) http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		digits := r.Form.Get("Digits")
 
 		if digits != keyRecordVoicemail {
@@ -173,8 +163,6 @@ func (h VoiceHandler) StartVoicemail(
 // either due to a keypress (rerecord) or caller hangup (end recording).
 func (h VoiceHandler) EndVoicemail(actionEndVoicemail string) http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		digits := r.Form.Get("Digits")
 
 		if digits == "hangup" {
@@ -194,8 +182,6 @@ func (h VoiceHandler) EndVoicemail(actionEndVoicemail string) http.HandlerFunc {
 // StatusCallback handles call status changes.
 func (h VoiceHandler) StatusCallback() http.HandlerFunc {
 	return h.handler(func(r *http.Request) string {
-		h.parseForm(r)
-
 		direction := r.Form.Get("Direction")
 		from := r.Form.Get("From")
 		callSID := r.Form.Get("CallSid")

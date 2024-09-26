@@ -7,11 +7,21 @@
       "properties": {
         "email": {
           "properties": {
-            "missedCallSubject": {
-              "type": "string"
-            },
-            "missedCallContent": {
-              "type": "string"
+            "missedCall": {
+              "properties": {
+                "subject": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "subject",
+                "content"
+              ]
             },
             "nameFrom": {
               "type": "string"
@@ -19,22 +29,59 @@
             "nameTo": {
               "type": "string"
             },
-            "voicemailSubject": {
-              "type": "string"
+            "textMessage": {
+              "properties": {
+                "subject": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "subject",
+                "content"
+              ]
             },
-            "voicemailContent": {
+            "voicemail": {
+              "properties": {
+                "subject": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "type": "object",
+              "required": [
+                "subject",
+                "content"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "type": "object",
+          "required": [
+            "missedCall",
+            "nameFrom",
+            "nameTo",
+            "textMessage",
+            "voicemail"
+          ]
+        },
+        "messaging": {
+          "properties": {
+            "response": {
               "type": "string"
             }
           },
           "additionalProperties": false,
           "type": "object",
           "required": [
-            "missedCallSubject",
-            "missedCallContent",
-            "nameFrom",
-            "nameTo",
-            "voicemailSubject",
-            "voicemailContent"
+            "response"
           ]
         },
         "voice": {
@@ -86,6 +133,7 @@
       "type": "object",
       "required": [
         "email",
+        "messaging",
         "voice"
       ]
     }

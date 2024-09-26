@@ -1,18 +1,33 @@
 # yaml-language-server: $schema=../schema.json
 email:
-  missedCallSubject: Missed call from {phoneNumber}
-  missedCallContent: |
-    A client tried to call InfoTech Ottawa but did not leave a voicemail.
-
-    Their phone number is: {phoneNumber}
   nameFrom: O-Comms
   nameTo: Caleb St-Denis
-  voicemailSubject: Voicemail from {phoneNumber}
-  voicemailContent: |
-    A caller to InfoTech Ottawa has left a voicemail.
+  missedCall:
+    subject: Missed call from {phoneNumber}
+    content: |
+      A client tried to call InfoTech Ottawa but did not leave a voicemail.
 
-    Phone number: {phoneNumber}
-    Link to voicemail: {voicemailURL}
+      Their phone number is: {phoneNumber}
+  textMessage:
+    subject: SMS from {phoneNumber}
+    content: |
+      A client attempted to text the InfoTech Ottawa number and left the following message:
+
+      {messageBody}
+  voicemail:
+    subject: Voicemail from {phoneNumber}
+    content: |
+      A caller to InfoTech Ottawa has left a voicemail.
+
+      Phone number: {phoneNumber}
+      Link to voicemail: {voicemailURL}
+
+messaging:
+  response: >
+    Thank you for reaching out to InfoTech Ottawa.
+    Unfortunately we are not accepting text messages at this time.
+    Please contact us by email at contact@infotechottawa.ca or call us at (613) 777-5650. Thank you!
+
 voice:
   acceptCall: Press any key to accept the call.
   confirmConnected: Connected.
