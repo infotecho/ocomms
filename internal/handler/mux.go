@@ -36,7 +36,6 @@ func (mf MuxFactory) Mux() *http.ServeMux {
 	mux.HandleFunc(voiceEndCall, mf.Voice.endCall(voicemailStart))
 	mux.HandleFunc(voicemailStart, mf.Voice.startVoicemail(voicemailStart, voicemailEnd))
 	mux.HandleFunc(voicemailEnd, mf.Voice.endVoicemail(voicemailEnd))
-	mux.HandleFunc("/voice/status-callback", mf.Voice.statusCallback())
 
 	mux.HandleFunc("/recordings/{id}", mf.Recordings.getRecording)
 

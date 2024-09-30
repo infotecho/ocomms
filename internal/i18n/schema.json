@@ -7,22 +7,6 @@
       "properties": {
         "email": {
           "properties": {
-            "missedCall": {
-              "properties": {
-                "subject": {
-                  "type": "string"
-                },
-                "content": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false,
-              "type": "object",
-              "required": [
-                "subject",
-                "content"
-              ]
-            },
             "nameFrom": {
               "type": "string"
             },
@@ -65,7 +49,6 @@
           "additionalProperties": false,
           "type": "object",
           "required": [
-            "missedCall",
             "nameFrom",
             "nameTo",
             "textMessage",

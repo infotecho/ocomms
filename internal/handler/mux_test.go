@@ -25,7 +25,6 @@ import (
 	"github.com/infotecho/ocomms/internal/i18n"
 	"github.com/infotecho/ocomms/internal/mail"
 	"github.com/infotecho/ocomms/internal/twigen"
-	"github.com/infotecho/ocomms/internal/twilio"
 	"github.com/twilio/twilio-go/client"
 	"golang.org/x/tools/txtar"
 )
@@ -80,11 +79,6 @@ func setupMux(t *testing.T, sgFake *fakes.SendGridClient) *http.ServeMux {
 		t.Fatalf("Error loading i18n dependency: %v", err)
 	}
 
-	twilioClient, err := fakes.NewTwilioClient()
-	if err != nil {
-		t.Fatalf("Failed to instantiate Twilio client test double: %v", err)
-	}
-
 	mailer := &mail.SendGridMailer{
 		Config:         config,
 		I18n:           i18n,
@@ -117,10 +111,6 @@ func setupMux(t *testing.T, sgFake *fakes.SendGridClient) *http.ServeMux {
 			Twigen: &twigen.Voice{
 				Config: config,
 				I18n:   i18n,
-				Logger: logger,
-			},
-			Twilio: &twilio.API{
-				Client: twilioClient,
 				Logger: logger,
 			},
 		},
@@ -370,13 +360,6 @@ var goldenTwimlTests = []struct {
 	},
 
 	{
-		name:   "status-callback",
-		path:   "/voice/status-callback",
-		form:   url.Values{},
-		golden: "noop",
-	},
-
-	{
 		name: "sms-reply",
 		path: "/sms/inbound",
 		form: url.Values{
@@ -434,68 +417,30 @@ var goldenEmailTests = []struct {
 	emailSent bool
 }{
 	{
-		name: "call-connected",
-		path: "/voice/status-callback",
+		name: "rerecord",
+		path: "/voice/end-voicemail",
 		form: url.Values{
-			"CallSid":    []string{fakes.CallConnected},
-			"CallStatus": []string{"completed"},
-			"Direction":  []string{"inbound"},
-			"From":       []string{clientDID},
-		},
-		emailSent: false,
-	},
-	{
-		name: "missed-call-en",
-		path: "/voice/status-callback",
-		form: url.Values{
-			"CallSid":    []string{fakes.CallMissedEn},
-			"CallStatus": []string{"completed"},
-			"Direction":  []string{"inbound"},
-			"From":       []string{clientDID},
-		},
-		emailSent: true,
-	},
-	{
-		name: "missed-call-fr",
-		path: "/voice/status-callback",
-		form: url.Values{
-			"CallSid":    []string{fakes.CallMissedFr},
-			"CallStatus": []string{"completed"},
-			"Direction":  []string{"inbound"},
-			"From":       []string{clientDID},
-		},
-		emailSent: true,
-	},
-	{
-		name: "no-lang-select",
-		path: "/voice/status-callback",
-		form: url.Values{
-			"CallSid":    []string{fakes.CallHangup},
-			"CallStatus": []string{"completed"},
-			"Direction":  []string{"inbound"},
-			"From":       []string{clientDID},
+			"Digits": []string{"9"},
 		},
 		emailSent: false,
 	},
 	{
 		name: "voicemail-en",
-		path: "/voice/status-callback",
+		path: "/voice/end-voicemail?lang=en",
 		form: url.Values{
-			"CallSid":    []string{fakes.CallWithVoicemailEn},
-			"CallStatus": []string{"completed"},
-			"Direction":  []string{"inbound"},
-			"From":       []string{clientDID},
+			"Digits":       []string{"hangup"},
+			"From":         []string{clientDID},
+			"RecordingSid": []string{"RE37975e538fc06fea00474b868fbcc859"},
 		},
 		emailSent: true,
 	},
 	{
 		name: "voicemail-fr",
-		path: "/voice/status-callback",
+		path: "/voice/end-voicemail?lang=fr",
 		form: url.Values{
-			"CallSid":    []string{fakes.CallWithVoicemailFr},
-			"CallStatus": []string{"completed"},
-			"Direction":  []string{"inbound"},
-			"From":       []string{clientDID},
+			"Digits":       []string{"hangup"},
+			"From":         []string{clientDID},
+			"RecordingSid": []string{"RE37975e538fc06fea00474b868fbcc859"},
 		},
 		emailSent: true,
 	},

@@ -25,28 +25,6 @@ type SendGridMailer struct {
 	SendGridClient SendGridClient
 }
 
-// MissedCall notifies agents by email that a client tried to call but did not leave a voicemail.
-func (m *SendGridMailer) MissedCall(ctx context.Context, lang string, fromDID string) {
-	subject := m.I18n.MessageReplace(
-		ctx,
-		lang,
-		func(m i18n.Messages) string { return m.Email.MissedCall.Subject },
-		map[string]string{
-			"phoneNumber": fromDID,
-		},
-	)
-	content := m.I18n.MessageReplace(
-		ctx,
-		lang,
-		func(m i18n.Messages) string { return m.Email.MissedCall.Content },
-		map[string]string{
-			"phoneNumber": fromDID,
-		},
-	)
-
-	m.send(ctx, subject, content)
-}
-
 // TextMessage notifies agents that a client send a text message.
 func (m *SendGridMailer) TextMessage(ctx context.Context, lang string, fromDID string, messageBody string) {
 	subject := m.I18n.MessageReplace(

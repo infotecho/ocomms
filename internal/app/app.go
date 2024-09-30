@@ -10,9 +10,7 @@ import (
 	"github.com/infotecho/ocomms/internal/i18n"
 	"github.com/infotecho/ocomms/internal/mail"
 	"github.com/infotecho/ocomms/internal/twigen"
-	"github.com/infotecho/ocomms/internal/twilio"
 	"github.com/sendgrid/sendgrid-go"
-	twilioApi "github.com/twilio/twilio-go"
 	"github.com/twilio/twilio-go/client"
 )
 
@@ -31,12 +29,6 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 		panic(err)
 	}
 
-	twilioClient := twilioApi.NewRestClientWithParams(twilioApi.ClientParams{
-		AccountSid: config.Twilio.Auth.AccountSID,
-		Username:   config.Twilio.Auth.APIKeySID,
-		Password:   config.Twilio.Auth.APIKeySecret,
-	})
-
 	mailer := &mail.SendGridMailer{
 		Config:         config,
 		I18n:           i18n,
@@ -44,7 +36,7 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 		SendGridClient: sendgrid.NewSendClient(config.Mail.SendGrid.APIKey),
 	}
 
-	requestValidator := client.NewRequestValidator(config.Twilio.Auth.AuthToken)
+	requestValidator := client.NewRequestValidator(config.Twilio.AuthToken)
 	handlerFactory := &handler.TwimlHandlerFactory{
 		Logger:           logger,
 		RequestValidator: &requestValidator,
@@ -72,10 +64,6 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 				Twigen: &twigen.Voice{
 					Config: config,
 					I18n:   i18n,
-					Logger: logger,
-				},
-				Twilio: &twilio.API{
-					Client: twilioClient.Api,
 					Logger: logger,
 				},
 			},

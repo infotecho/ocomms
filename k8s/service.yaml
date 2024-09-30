@@ -18,13 +18,6 @@ spec:
                 secretKeyRef:
                   key: "1"
                   name: sendgrid-api-key
-            - name: TWILIO_API_KEY_SID
-              value: SK5249dbf7bdd9d365ae81ba851195ab1f
-            - name: TWILIO_API_KEY_SECRET
-              valueFrom:
-                secretKeyRef:
-                  key: "1"
-                  name: twilio-api-key
             - name: TWILIO_AUTH_TOKEN
               valueFrom:
                 secretKeyRef:

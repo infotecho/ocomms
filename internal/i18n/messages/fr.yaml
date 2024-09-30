@@ -2,12 +2,6 @@
 email:
   nameFrom: O-Comms
   nameTo: Caleb St-Denis
-  missedCall:
-    subject: Appel manqué de {phoneNumber}
-    content: |
-      Un client a tenté d'appeler l'Infothèque d'Ottawa mais il n'a pas laissé de message.
-
-      Leur numéro de téléphone est: {phoneNumber}
   textMessage:
     subject: Message text reçu de {phoneNumber}
     content: |

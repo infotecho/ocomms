@@ -143,29 +143,8 @@
               },
               "type": "array"
             },
-            "auth": {
-              "properties": {
-                "accountSID": {
-                  "type": "string"
-                },
-                "apiKeySID": {
-                  "type": "string"
-                },
-                "apiKeySecret": {
-                  "type": "string"
-                },
-                "authToken": {
-                  "type": "string"
-                }
-              },
-              "additionalProperties": false,
-              "type": "object",
-              "required": [
-                "accountSID",
-                "apiKeySID",
-                "apiKeySecret",
-                "authToken"
-              ]
+            "authToken": {
+              "type": "string"
             },
             "languages": {
               "additionalProperties": {
@@ -212,7 +191,7 @@
           "type": "object",
           "required": [
             "agentDIDs",
-            "auth",
+            "authToken",
             "languages",
             "recordInboundCalls",
             "recordOutboundCalls",

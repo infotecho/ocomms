@@ -7,12 +7,6 @@ resource "google_service_account" "ocomms" {
   account_id = "ocomms"
 }
 
-resource "google_secret_manager_secret_iam_member" "ocomms-twilio-api-key" {
-  secret_id = google_secret_manager_secret.twilio_api_key.id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.ocomms.email}"
-}
-
 resource "google_secret_manager_secret_iam_member" "ocomms-twilio-auth-token" {
   secret_id = google_secret_manager_secret.twilio_auth_token.id
   role      = "roles/secretmanager.secretAccessor"

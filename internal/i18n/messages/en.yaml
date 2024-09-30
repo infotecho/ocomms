@@ -2,12 +2,6 @@
 email:
   nameFrom: O-Comms
   nameTo: Caleb St-Denis
-  missedCall:
-    subject: Missed call from {phoneNumber}
-    content: |
-      A client tried to call InfoTech Ottawa but did not leave a voicemail.
-
-      Their phone number is: {phoneNumber}
   textMessage:
     subject: SMS from {phoneNumber}
     content: |

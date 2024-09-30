@@ -7,8 +7,8 @@ import (
 	"slices"
 
 	"github.com/infotecho/ocomms/internal/config"
+	"github.com/infotecho/ocomms/internal/mail"
 	"github.com/infotecho/ocomms/internal/twigen"
-	"github.com/infotecho/ocomms/internal/twilio"
 )
 
 const (
@@ -16,19 +16,13 @@ const (
 	keyRecordVoicemail  = "9"
 )
 
-type emailer interface {
-	MissedCall(ctx context.Context, lang string, from string)
-	Voicemail(ctx context.Context, lang string, from string, recordingSID string)
-}
-
 // VoiceHandler implements handlers for Twilio Programmable Voice hooks.
 type VoiceHandler struct {
 	Config         config.Config
-	Emailer        emailer
+	Emailer        *mail.SendGridMailer
 	HandlerFactory *TwimlHandlerFactory
 	Logger         *slog.Logger
 	Twigen         *twigen.Voice
-	Twilio         *twilio.API
 }
 
 func (h VoiceHandler) inbound(actionDialOut string, actionConnectAgent string) http.HandlerFunc {
@@ -137,6 +131,9 @@ func (h VoiceHandler) endVoicemail(actionEndVoicemail string) http.HandlerFunc {
 		digits := params["Digits"]
 
 		if digits == "hangup" {
+			from := params["From"]
+			recordingSID := params["RecordingSid"]
+			h.Emailer.Voicemail(ctx, lang, from, recordingSID)
 			return h.Twigen.Noop(ctx)
 		}
 
@@ -147,30 +144,5 @@ func (h VoiceHandler) endVoicemail(actionEndVoicemail string) http.HandlerFunc {
 			lang,
 			true,
 		)
-	})
-}
-
-// statusCallback handles call status changes.
-func (h VoiceHandler) statusCallback() http.HandlerFunc {
-	return h.HandlerFactory.handler(func(ctx context.Context, _ string, params map[string]string) string {
-		direction := params["Direction"]
-		from := params["From"]
-		callSID := params["CallSid"]
-		callStatus := params["CallStatus"]
-
-		if direction != "inbound" || callStatus != callStatusCompleted {
-			return h.Twigen.Noop(ctx)
-		}
-
-		metadata := h.Twilio.GetCallMetadata(ctx, callSID)
-
-		switch {
-		case metadata.VoicemailRecordingID != "":
-			h.Emailer.Voicemail(ctx, metadata.Lang, from, metadata.VoicemailRecordingID)
-		case !metadata.CallConnected && metadata.Lang != "":
-			h.Emailer.MissedCall(ctx, metadata.Lang, from)
-		}
-
-		return h.Twigen.Noop(ctx)
 	})
 }
