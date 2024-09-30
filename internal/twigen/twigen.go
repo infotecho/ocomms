@@ -148,7 +148,7 @@ func (v Voice) GatherAccept(ctx context.Context, actionConfirmConnected string, 
 	sayAccept := v.say(ctx, lang, func(m i18n.Messages) string { return m.Voice.AcceptCall })
 	hangup := &twiml.VoiceHangup{}
 	gather := &twiml.VoiceGather{
-		Action:        actionConfirmConnected,
+		Action:        actionConfirmConnected + "?lang=" + lang,
 		NumDigits:     "1",
 		Timeout:       strconv.Itoa(v.Config.Twilio.Timeouts.GatherAcceptCall),
 		InnerElements: []twiml.Element{sayAccept},

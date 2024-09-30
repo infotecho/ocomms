@@ -1,13 +1,13 @@
 -- en --
 <Response>
-	<Gather action="/voice/confirm-connected" numDigits="1" timeout="5">
+	<Gather action="/voice/confirm-connected?lang=en" numDigits="1" timeout="5">
 		<Say language="en-US">Press any key to accept the call.</Say>
 	</Gather>
 	<Hangup></Hangup>
 </Response>
 -- fr --
 <Response>
-	<Gather action="/voice/confirm-connected" numDigits="1" timeout="5">
+	<Gather action="/voice/confirm-connected?lang=fr" numDigits="1" timeout="5">
 		<Say language="fr-CA">Appuyez sur n&apos;importe quelle touche pour accepter l&apos;appel.</Say>
 	</Gather>
 	<Hangup></Hangup>
