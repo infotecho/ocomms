@@ -12,6 +12,7 @@ linters:
   disable:
     - depguard
     - execinquery # deprecated
+    - funlen
     - gomnd       # deprecated
     - exportloopref # deprecated
     - tagliatelle

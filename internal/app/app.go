@@ -13,6 +13,7 @@ import (
 	"github.com/infotecho/ocomms/internal/twilio"
 	"github.com/sendgrid/sendgrid-go"
 	twilioApi "github.com/twilio/twilio-go"
+	"github.com/twilio/twilio-go/client"
 )
 
 // Server returns the [http.Server] implementing the O-Comms API.
@@ -32,8 +33,8 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 
 	twilioClient := twilioApi.NewRestClientWithParams(twilioApi.ClientParams{
 		AccountSid: config.Twilio.Auth.AccountSID,
-		Username:   config.Twilio.Auth.KeySID,
-		Password:   config.Twilio.Auth.KeySecret,
+		Username:   config.Twilio.Auth.APIKeySID,
+		Password:   config.Twilio.Auth.APIKeySecret,
 	})
 
 	mailer := &mail.SendGridMailer{
@@ -41,6 +42,12 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 		I18n:           i18n,
 		Logger:         logger,
 		SendGridClient: sendgrid.NewSendClient(config.Mail.SendGrid.APIKey),
+	}
+
+	requestValidator := client.NewRequestValidator(config.Twilio.Auth.AuthToken)
+	handlerFactory := &handler.TwimlHandlerFactory{
+		Logger:           logger,
+		RequestValidator: &requestValidator,
 	}
 
 	return ServerFactory{
@@ -51,15 +58,17 @@ func WireDependencies(config config.Config, logger *slog.Logger) ServerFactory {
 				Logger: logger,
 			},
 			SMS: &handler.SMSHandler{
-				Config: config,
-				I18n:   i18n,
-				Logger: logger,
-				Mailer: mailer,
+				Config:         config,
+				I18n:           i18n,
+				HandlerFactory: handlerFactory,
+				Logger:         logger,
+				Mailer:         mailer,
 			},
 			Voice: &handler.VoiceHandler{
-				Config:  config,
-				Emailer: mailer,
-				Logger:  logger,
+				Config:         config,
+				Emailer:        mailer,
+				HandlerFactory: handlerFactory,
+				Logger:         logger,
 				Twigen: &twigen.Voice{
 					Config: config,
 					I18n:   i18n,

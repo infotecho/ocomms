@@ -11,3 +11,10 @@ resource "google_secret_manager_secret" "sendgrid_api_key" {
     auto {}
   }
 }
+
+resource "google_secret_manager_secret" "twilio_auth_token" {
+  secret_id = "twilio-auth-token"
+  replication {
+    auto {}
+  }
+}

@@ -148,10 +148,13 @@
                 "accountSID": {
                   "type": "string"
                 },
-                "keySID": {
+                "apiKeySID": {
                   "type": "string"
                 },
-                "keySecret": {
+                "apiKeySecret": {
+                  "type": "string"
+                },
+                "authToken": {
                   "type": "string"
                 }
               },
@@ -159,8 +162,9 @@
               "type": "object",
               "required": [
                 "accountSID",
-                "keySID",
-                "keySecret"
+                "apiKeySID",
+                "apiKeySecret",
+                "authToken"
               ]
             },
             "languages": {

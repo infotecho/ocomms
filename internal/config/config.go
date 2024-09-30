@@ -46,9 +46,10 @@ type Config struct {
 	Twilio struct {
 		AgentDIDs []string `json:"agentDIDs"`
 		Auth      struct {
-			AccountSID string `json:"accountSID"`
-			KeySID     string `json:"keySID"`
-			KeySecret  string `json:"keySecret"`
+			AccountSID   string `json:"accountSID"`
+			APIKeySID    string `json:"apiKeySID"`
+			APIKeySecret string `json:"apiKeySecret"`
+			AuthToken    string `json:"authToken"`
 		} `json:"auth"`
 		Languages           map[string]string `json:"languages"`
 		RecordInboundCalls  bool              `json:"recordInboundCalls"`

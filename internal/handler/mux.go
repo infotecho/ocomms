@@ -26,17 +26,17 @@ type MuxFactory struct {
 func (mf MuxFactory) Mux() *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.Handle("/sms/inbound", mf.SMS.Inbound())
+	mux.Handle("/sms/inbound", mf.SMS.inbound())
 
-	mux.HandleFunc("/voice/inbound", mf.Voice.Inbound(voiceDialOut, voiceConnectAgent))
-	mux.HandleFunc(voiceDialOut, mf.Voice.DialOut())
-	mux.HandleFunc(voiceConnectAgent, mf.Voice.ConnectAgent(voiceConnectAgent, voiceAcceptCall, voiceEndCall))
-	mux.HandleFunc(voiceAcceptCall, mf.Voice.AcceptCall(voiceConfirmConnected))
-	mux.HandleFunc(voiceConfirmConnected, mf.Voice.ConfirmConnected())
-	mux.HandleFunc(voiceEndCall, mf.Voice.EndCall(voicemailStart))
-	mux.HandleFunc(voicemailStart, mf.Voice.StartVoicemail(voicemailStart, voicemailEnd))
-	mux.HandleFunc(voicemailEnd, mf.Voice.EndVoicemail(voicemailEnd))
-	mux.HandleFunc("/voice/status-callback", mf.Voice.StatusCallback())
+	mux.HandleFunc("/voice/inbound", mf.Voice.inbound(voiceDialOut, voiceConnectAgent))
+	mux.HandleFunc(voiceDialOut, mf.Voice.dialOut())
+	mux.HandleFunc(voiceConnectAgent, mf.Voice.connectAgent(voiceConnectAgent, voiceAcceptCall, voiceEndCall))
+	mux.HandleFunc(voiceAcceptCall, mf.Voice.acceptCall(voiceConfirmConnected))
+	mux.HandleFunc(voiceConfirmConnected, mf.Voice.confirmConnected())
+	mux.HandleFunc(voiceEndCall, mf.Voice.endCall(voicemailStart))
+	mux.HandleFunc(voicemailStart, mf.Voice.startVoicemail(voicemailStart, voicemailEnd))
+	mux.HandleFunc(voicemailEnd, mf.Voice.endVoicemail(voicemailEnd))
+	mux.HandleFunc("/voice/status-callback", mf.Voice.statusCallback())
 
 	mux.HandleFunc("/recordings/{id}", mf.Recordings.getRecording)
 

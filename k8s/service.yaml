@@ -25,3 +25,8 @@ spec:
                 secretKeyRef:
                   key: "1"
                   name: twilio-api-key
+            - name: TWILIO_AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  key: "1"
+                  name: twilio-auth-token

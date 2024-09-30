@@ -28,8 +28,9 @@ twilio:
     - "+16138160938"
   auth:
     accountSID: AC9dd9e2eaf471a273968b3f1a18b637cc
-    keySID: ${TWILIO_API_KEY_SID}
-    keySecret: ${TWILIO_API_KEY_SECRET}
+    apiKeySID: ${TWILIO_API_KEY_SID}
+    apiKeySecret: ${TWILIO_API_KEY_SECRET}
+    authToken: ${TWILIO_AUTH_TOKEN}
   recordInboundCalls: true
   recordOutboundCalls: true
   timeouts:
