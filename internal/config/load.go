@@ -8,8 +8,8 @@ import (
 	"os"
 	"reflect"
 
+	"github.com/go-viper/mapstructure/v2"
 	_ "github.com/joho/godotenv/autoload" // load .env
-	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
 )
 

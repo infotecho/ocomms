@@ -3,7 +3,7 @@ package twilio
 import (
 	"errors"
 
-	"github.com/mitchellh/mapstructure"
+	"github.com/go-viper/mapstructure/v2"
 	openapi "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
