@@ -21,3 +21,14 @@ curl -fsSL https://bun.sh/install | bash
 ```sh
 bun install -g ajv-cli
 ```
+
+### Apply Terraform changes
+```
+gcloud auth application-default login
+```
+```
+cd terraform
+```
+```
+terraform apply
+```
