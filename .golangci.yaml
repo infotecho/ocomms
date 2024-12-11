@@ -11,9 +11,7 @@ linters:
   #   - varnamelenff
   disable:
     - depguard
-    - execinquery # deprecated
     - funlen
-    - gomnd       # deprecated
     - exportloopref # deprecated
     - tagliatelle
     - wsl
