@@ -2,6 +2,6 @@
 <Response>
 	<Say language="fr-CA">Veuillez patienter alors que nous transférons votre appel.</Say>
 	<Dial action="/voice/end-call?lang=fr" callerId="+16137775650" record="record-from-answer" timeout="10">
-		<Number url="/voice/accept-call?lang=fr">+16138160938</Number>
+		<Number url="/voice/accept-call?lang=fr">+17778889999</Number>
 	</Dial>
 </Response>

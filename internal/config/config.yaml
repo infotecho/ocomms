@@ -25,7 +25,7 @@ mail:
 
 twilio:
   agentDIDs:
-    - "+16138160938"
+    - "${PRIMARY_AGENT_DID}"
   authToken: ${TWILIO_AUTH_TOKEN}
   recordInboundCalls: true
   recordOutboundCalls: true

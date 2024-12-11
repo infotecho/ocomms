@@ -11,3 +11,10 @@ resource "google_secret_manager_secret" "twilio_auth_token" {
     auto {}
   }
 }
+
+resource "google_secret_manager_secret" "primary_agent_did" {
+  secret_id = "primary-agent-did"
+  replication {
+    auto {}
+  }
+}

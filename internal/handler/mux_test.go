@@ -31,7 +31,7 @@ import (
 
 const (
 	clientDID  = "+17052223434" // An arbitrary DID
-	agentDID   = "+16138160938"
+	agentDID   = "+17778889999"
 	companyDID = "+16137775650"
 	authToken  = "193df2b5c93ee691ddd10c222b1a50ae" //nolint:gosec // fake auth token
 )

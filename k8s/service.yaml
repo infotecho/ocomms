@@ -23,3 +23,8 @@ spec:
                 secretKeyRef:
                   key: "1"
                   name: twilio-auth-token
+            - name: PRIMARY_AGENT_DID
+              valueFrom:
+                secretKeyRef:
+                  key: "1"
+                  name: primary-agent-did
