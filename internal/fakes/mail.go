@@ -38,6 +38,6 @@ func (sgc *SendGridClient) SendWithContext(_ context.Context, email *mail.SGMail
 }
 
 // SentEmails returns the list of emails that were requested to be "sent" by the fake, in RFC5322 format.
-func (sgc SendGridClient) SentEmails() [][]byte {
+func (sgc *SendGridClient) SentEmails() [][]byte {
 	return sgc.sent
 }
