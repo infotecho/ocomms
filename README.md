@@ -1,4 +1,11 @@
 ## ocomms
+Twilio webhook handlers implementing InfoTech Ottawa's automated voice ([IVR](https://en.wikipedia.org/wiki/Interactive_voice_response)) system.
+
+### Features
+* Ability for callers to discard and re-record their voice messages before submitting (I always hated having to one-shot voicemails)
+* Internationalized - fully English-French bilingual
+
+
 ### Local Setup
 To run `make`/`make check`:
 
