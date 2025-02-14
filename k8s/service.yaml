@@ -26,5 +26,5 @@ spec:
             - name: PRIMARY_AGENT_DID
               valueFrom:
                 secretKeyRef:
-                  key: "1"
+                  key: "2"
                   name: primary-agent-did
